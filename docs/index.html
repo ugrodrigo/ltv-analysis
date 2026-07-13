@@ -1,0 +1,994 @@
+<title>RavenStack LTV &amp; Reactivation Dashboard</title>
+<style>
+  :root {
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --good:           #0ca30c;
+    --critical:       #d03b3b;
+    --s1: #2a78d6; /* blue    */
+    --s2: #1baf7a; /* aqua    */
+    --s3: #eda100; /* yellow  */
+    --s4: #008300; /* green   */
+    --s5: #4a3aa7; /* violet  */
+    --s6: #e34948; /* red     */
+    --s7: #e87ba4; /* magenta */
+    --s8: #eb6834; /* orange  */
+  }
+  :root[data-theme="dark"] {
+    --surface-1:      #1a1a19;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --good:           #0ca30c;
+    --critical:       #e66767;
+    --s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #008300;
+    --s5: #9085e9; --s6: #e66767; --s7: #d55181; --s8: #d95926;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --critical:       #e66767;
+      --s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #008300;
+      --s5: #9085e9; --s6: #e66767; --s7: #d55181; --s8: #d95926;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header h1 { font-size: 26px; font-weight: 650; margin: 0 0 6px; letter-spacing: -0.01em; }
+  header p.sub { color: var(--text-secondary); font-size: 15px; margin: 0 0 28px; max-width: 760px; line-height: 1.5; }
+
+  section { margin-top: 44px; }
+  h2 { font-size: 17px; font-weight: 650; margin: 0 0 4px; }
+  h2 .tag {
+    display: inline-block; font-size: 11px; font-weight: 650; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; display: block;
+  }
+  p.note { color: var(--text-secondary); font-size: 13.5px; line-height: 1.55; margin: 6px 0 18px; max-width: 780px; }
+
+  .narrative {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 26px;
+  }
+  .narrative p { font-size: 14.5px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
+  .narrative p:last-child { margin-bottom: 0; }
+  .narrative strong { color: var(--text-primary); font-weight: 600; }
+
+  /* stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .tile {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 14px 12px;
+  }
+  .tile .label { font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.3; }
+  .tile .value { font-size: 22px; font-weight: 650; letter-spacing: -0.01em; }
+  .tile .delta { font-size: 12px; margin-top: 4px; color: var(--text-secondary); }
+
+  /* chart cards */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px 14px; position: relative;
+  }
+  .card h3 { font-size: 13.5px; font-weight: 650; margin: 0 0 2px; }
+  .card .sub { font-size: 12px; color: var(--text-muted); margin: 0 0 12px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; }
+  .legend .item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .legend .swatch { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+
+  svg { display: block; overflow: visible; font-family: inherit; }
+  .axis-label { fill: var(--text-muted); font-size: 10.5px; }
+  .grid-line { stroke: var(--grid); stroke-width: 1; }
+  .baseline { stroke: var(--baseline); stroke-width: 1; }
+  .bar-label { fill: var(--text-secondary); font-size: 10.5px; }
+
+  .tooltip {
+    position: fixed; pointer-events: none; z-index: 50;
+    background: var(--text-primary); color: var(--surface-1);
+    font-size: 12px; padding: 7px 10px; border-radius: 7px;
+    line-height: 1.5; opacity: 0; transition: opacity .08s ease;
+    max-width: 240px; box-shadow: 0 4px 16px rgba(0,0,0,.18);
+  }
+  .tooltip.show { opacity: 1; }
+  .tooltip b { font-weight: 650; }
+
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 4px; }
+  table.data-table th, table.data-table td {
+    text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
+  table.data-table th:first-child, table.data-table td:first-child { text-align: left; }
+  table.data-table th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
+  table.data-table td { color: var(--text-secondary); }
+
+  details.table-toggle { margin-top: 12px; }
+  details.table-toggle summary {
+    cursor: pointer; font-size: 12px; color: var(--text-muted); user-select: none;
+  }
+
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--border); }
+  footer p { color: var(--text-muted); font-size: 11.5px; line-height: 1.6; }
+
+  .rec-list { margin: 0; padding-left: 20px; }
+  .rec-list li { font-size: 14px; line-height: 1.65; color: var(--text-secondary); margin-bottom: 10px; }
+  .rec-list li strong { color: var(--text-primary); }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>RavenStack — LTV &amp; Reactivation Analysis</h1>
+    <p class="sub">
+      Account-level lifetime value, retention, and win-back performance across 500 B2B SaaS
+      accounts, built as a working sample of a Global Reactivations analytics workflow —
+      KPI framing, channel/cohort LTV, survival curves, and churn-driver diagnostics.
+    </p>
+  </header>
+
+  <section id="kpis">
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Executive summary</span>The reactivation opportunity</h2>
+    <div class="narrative">
+      <p>
+        RavenStack carries a <strong>22% lifetime churn rate</strong>, with the median account
+        churning around <strong>month 9–10</strong> of its lifecycle — half the base is gone by
+        then on the current survival curve. That alone would be a retention story. It isn't the
+        whole story: <strong>277 of the 390 currently-active accounts (71%)</strong> have a past
+        churn event on record. Most of today's revenue base is not accounts that never left — it's
+        accounts that were <strong>won back</strong>. Reactivation isn't a side motion here; it's
+        already the primary engine of the active book.
+      </p>
+      <p>
+        Acquisition channel performance splits on more than one axis. <strong>Ads</strong>-sourced
+        accounts churn fastest (23.5%) but also reactivate at more than <strong>4x the rate</strong>
+        of organic or referral-driven accounts (21.7% vs ~5%) and carry the highest realized LTV of
+        any channel — the volatility is real, but so is the recoverability. <strong>Partner</strong>
+        and <strong>organic</strong> channels churn less but almost never come back once they leave,
+        which argues for a different treatment: retention investment pre-churn rather than win-back
+        spend post-churn.
+      </p>
+      <p>
+        Churn reasons split roughly evenly across <em>features, budget, support, competitor,</em> and
+        <em>pricing</em> — no single fixable driver dominates, which is itself the finding: a
+        one-size win-back offer will underperform a segmented one. Accounts citing
+        <strong>competitor</strong> and <strong>features</strong> carry the highest historical LTV,
+        making them the highest-value reactivation targets per dollar of campaign spend.
+      </p>
+      <p>
+        Applying real cost signals — support-ticket hours and refund/credit amounts — plus an
+        industry-benchmark gross margin, net LTV comes in at <strong>$42.2M</strong> against
+        <strong>$57.3M</strong> in gross realized revenue (74%). Critically, the <strong>channel
+        ranking is unchanged</strong> after this adjustment: ads and partner still lead on value, event
+        still lags. The reactivation conclusions above hold under a margin-adjusted view, not just a
+        top-line one.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Channel performance</span>Lifetime value &amp; retention by acquisition source</h2>
+    <p class="note">
+      Realized LTV = revenue actually billed to date. Projected LTV applies the classic
+      ARPA ÷ monthly-churn-rate formula per channel, i.e. what the channel is worth if current
+      churn holds. Reading the two together separates channels that are merely young (low
+      realized, high projected) from channels that are actually underperforming.
+    </p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Realized vs. projected LTV by channel</h3>
+        <p class="sub">Average per account, USD</p>
+        <div id="chart-channel-ltv"></div>
+      </div>
+      <div class="card">
+        <h3>Churn rate vs. reactivation rate by channel</h3>
+        <p class="sub">Share of channel accounts</p>
+        <div id="chart-channel-churn"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Margin-adjusted LTV</span>Gross revenue vs. net (contribution) LTV</h2>
+    <div class="narrative" id="assumptions-box" style="margin-bottom:16px;"></div>
+    <div class="card">
+      <h3>Gross realized LTV vs. net LTV, by channel</h3>
+      <p class="sub">Average per account, USD — net LTV nets out real refund costs and support cost-to-serve, then applies the assumed gross margin</p>
+      <div id="chart-channel-net-ltv"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Retention</span>Survival curves by acquisition channel</h2>
+    <p class="note">
+      Percent of each channel's accounts still active at N months since signup. All channels
+      lose roughly half their accounts by month 9–10; the separation that follows is where
+      channel quality actually shows up.
+    </p>
+    <div class="card">
+      <h3>% accounts retained, by month since signup</h3>
+      <p class="sub">Channel cohorts, months 0–24</p>
+      <div id="chart-survival"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Reactivation</span>What win-back is actually worth</h2>
+    <p class="note">
+      Segmenting accounts by lifecycle shows reactivated accounts land close to never-churned
+      accounts in value — the "damaged goods" assumption doesn't hold in this data.
+    </p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Avg realized LTV by lifecycle segment</h3>
+        <p class="sub">Never churned vs. single churn vs. serial churn-and-reactivate</p>
+        <div id="chart-lifecycle"></div>
+      </div>
+      <div class="card">
+        <h3>Reactivation rate by channel</h3>
+        <p class="sub">Share of churned accounts that came back</p>
+        <div id="chart-reactivation"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Churn drivers</span>Reason codes &amp; account value at risk</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Churn events by reason code</h3>
+        <p class="sub">Share of all logged churn events</p>
+        <div id="chart-reason"></div>
+      </div>
+      <div class="card">
+        <h3>Avg account LTV by churn reason</h3>
+        <p class="sub">Higher bars = higher-value accounts lost to that reason</p>
+        <div id="chart-reason-ltv"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Segmentation</span>LTV by industry &times; channel</h2>
+    <p class="note">Average realized LTV per account. Darker cells = higher value — useful for prioritizing which industry/channel pairs deserve dedicated reactivation campaigns.</p>
+    <div class="card">
+      <div id="chart-heatmap"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Predictive LTV</span>Scoring accounts before their value is known</h2>
+    <p class="note">
+      Everything above is retrospective — it describes accounts whose full lifecycle already
+      played out. This section asks a forward-looking question instead: using only what's knowable
+      in an account's <strong>first 90 days</strong> (plan, seats, deal size, early product usage,
+      early support contact — never tenure, churn status, or current MRR, which are the outcome
+      in disguise), can we predict its eventual net LTV before waiting years to find out?
+    </p>
+    <div class="narrative" id="predictive-summary" style="margin-bottom:16px;"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Model accuracy vs. a naive baseline</h3>
+        <p class="sub">5-fold cross-validated MAE (avg. dollar error per account) — lower is better</p>
+        <div id="chart-model-mae"></div>
+      </div>
+      <div class="card">
+        <h3>What actually predicts LTV in the first 90 days</h3>
+        <p class="sub">Random forest feature importance (top 8)</p>
+        <div id="chart-feature-importance"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>Predicted vs. actual net LTV</h3>
+      <p class="sub">Every mature account, scored out-of-fold (never trained on itself) — points near the diagonal are well-predicted</p>
+      <div id="chart-scatter"></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>Highest-predicted-value accounts still too young to grade</h3>
+      <p class="sub">Signed up within the last 90 days — no ground-truth LTV yet, scored by the trained model</p>
+      <div id="table-young-accounts"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Reactivation timing &amp; outreach</span>Who to call, and roughly what to offer</h2>
+    <p class="note">
+      The original ask here was "who's likely to reactivate, and which offer should we send?" Two
+      things changed the shape of the answer, disclosed below rather than papered over.
+    </p>
+    <div class="narrative" id="react-data-quality" style="margin-bottom:16px;"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Days to reactivate, by churn reason</h3>
+        <p class="sub">Median days between churn and the next subscription starting — the real, non-degenerate signal reason code carries</p>
+        <div id="chart-reason-timing"></div>
+      </div>
+      <div class="card">
+        <h3>What predicts how long reactivation takes</h3>
+        <p class="sub">Random forest feature importance (top 8), log-days target</p>
+        <div id="chart-react-importance"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>Offer mapping (business rule, not a learned model)</h3>
+      <p class="sub">No experiment/treatment data exists in this dataset to learn offer effectiveness — this maps churn reason to a standard win-back playbook offer</p>
+      <div id="table-offer-map"></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>Outreach priority list</h3>
+      <p class="sub">Accounts with no observed reactivation yet, ranked by how overdue they are vs. their predicted natural return window, and by historical value</p>
+      <div id="table-outreach"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag">Recommendations</span>Where this points the reactivation program</h2>
+    <ol class="rec-list">
+      <li><strong>Fund a channel-specific win-back motion, not a blanket one.</strong> Ads-sourced
+        churners reactivate 4–5x more readily than organic/partner churners — a paid win-back offer
+        on ads-sourced accounts should have the best payback of any channel in the portfolio.</li>
+      <li><strong>Segment win-back messaging by reason code.</strong> Competitor- and feature-driven
+        churn carries the highest account value; a feature-gap-specific offer will outperform a
+        generic discount for that segment, while budget/pricing churners need a commercial motion
+        instead.</li>
+      <li><strong>Move the intervention earlier for partner/organic accounts.</strong> These channels
+        churn less but almost never come back — the ROI is in pre-churn retention triggers (usage
+        health scores, proactive CSM outreach), not post-churn win-back spend.</li>
+      <li><strong>Treat reactivated accounts as full-value, not discounted risk.</strong> Serial
+        churn-and-reactivate accounts land within 10% of never-churned LTV — sizing win-back
+        campaign budgets against a "damaged" assumption is leaving money on the table.</li>
+      <li><strong>Deal size at signup, not early behavior, is the strongest available LTV signal.</strong>
+        Seats and initial MRR dominate the predictive model; support and satisfaction signals in the
+        first 90 days carry almost no weight. Practically: CS/onboarding attention is better targeted
+        by contract size at close than by waiting to see who "engages well" early on.</li>
+      <li><strong>Stop asking "will they come back" — ask "are they overdue."</strong> 87% of churn events
+        resolve into a new subscription within weeks regardless of segment, so a binary win-back-or-not
+        model has nothing to predict. The useful trigger is an account that's already past its
+        reason-code-typical return window — that's a concrete, automatable signal for when to escalate
+        from a low-cost nudge to a real offer.</li>
+      <li><strong>Budget-cycle churn needs patience, not urgency.</strong> Budget-driven churners take the
+        longest to return (median 21 days vs. 12 for pricing) — a fast aggressive win-back push is more
+        likely to be premature than well-timed for this reason code specifically.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>
+      Source: RavenStack synthetic SaaS dataset (accounts, subscriptions, feature_usage,
+      support_tickets, churn_events) — dataset author River @ Rivalytics, used under its
+      MIT-like license for portfolio/educational purposes. Realized LTV = Σ(mrr_amount ×
+      active months) per account through 2024-12-31. Projected LTV = ARPA ÷ monthly churn
+      rate (churned accounts' average tenure), a standard SaaS approximation, not a
+      cohort-fit model. Net LTV = realized LTV × an assumed 78% gross margin, minus actual
+      refund/credit amounts and support cost-to-serve (ticket hours × an assumed $35/hr) —
+      the dataset has no COGS/hosting/salary fields, so the margin % and hourly rate are
+      disclosed industry-benchmark assumptions, not measurements. Analysis built as a working
+      sample against the Staff Marketing Analyst (Global Reactivations) role scope — not
+      RavenStack's actual business.
+    </p>
+  </footer>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const DATA = {"kpi": {"total_accounts": 500, "active_accounts": 390, "churned_accounts": 110, "overall_churn_rate": 0.22, "total_realized_ltv": 57330087.36, "avg_realized_ltv": 114660.17, "total_net_ltv": 42198545.89, "avg_net_ltv": 84397.09, "total_support_cost": 2510270.0, "total_refund_cost": 8652.25, "net_ltv_pct_of_gross": 0.7361, "current_total_mrr": "10159608", "current_total_arr": "121915296", "reactivation_rate_among_churned": 0.1091, "accounts_with_multiple_churn_events": 175, "avg_tenure_months_churned": 5.32, "avg_tenure_months_active": 10.82}, "assumptions": {"assumed_gross_margin": 0.78, "assumed_support_cost_per_hour_usd": 35, "note": "Dataset has no COGS/hosting/salary fields. Net LTV = realized revenue x an assumed SaaS-benchmark gross margin, minus two REAL cost signals present in the data: support resolution hours (costed at an assumed $/hr) and refund/credit amounts (actual $ from churn_events). Everything except the margin % and the $/hr rate is measured, not assumed."}, "channel": [{"channel": "ads", "accounts": 98, "churn_rate": 0.2347, "reactivation_rate": 0.2174, "avg_realized_ltv": 125662.01, "avg_net_ltv": 92733.49, "avg_support_cost": 5276.43, "avg_current_mrr": 19923.9, "projected_ltv": 157087.24, "projected_net_ltv": 122528.05, "avg_tenure_months": 11.29}, {"channel": "partner", "accounts": 89, "churn_rate": 0.1461, "reactivation_rate": 0.0769, "avg_realized_ltv": 120546.19, "avg_net_ltv": 89067.28, "avg_support_cost": 4940.9, "avg_current_mrr": 21454.11, "projected_ltv": 102744.18, "projected_net_ltv": 80140.46, "avg_tenure_months": 10.36}, {"channel": "organic", "accounts": 114, "churn_rate": 0.1754, "reactivation_rate": 0.05, "avg_realized_ltv": 119396.8, "avg_net_ltv": 88139.82, "avg_support_cost": 4968.77, "avg_current_mrr": 22219.91, "projected_ltv": 99712.22, "projected_net_ltv": 77775.53, "avg_tenure_months": 9.34}, {"channel": "other", "accounts": 103, "churn_rate": 0.2427, "reactivation_rate": 0.04, "avg_realized_ltv": 108797.78, "avg_net_ltv": 79696.54, "avg_support_cost": 5148.4, "avg_current_mrr": 20428.0, "projected_ltv": 96547.58, "projected_net_ltv": 75307.11, "avg_tenure_months": 9.76}, {"channel": "event", "accounts": 96, "churn_rate": 0.3021, "reactivation_rate": 0.1379, "avg_realized_ltv": 98637.42, "avg_net_ltv": 72156.19, "avg_support_cost": 4757.45, "avg_current_mrr": 17296.83, "projected_ltv": 81987.05, "projected_net_ltv": 63949.9, "avg_tenure_months": 9.05}], "plan_tier": [{"plan_tier": "Basic", "accounts": 168, "churn_rate": 0.2202, "avg_realized_ltv": 115991.41, "avg_net_ltv": 85788.57, "avg_current_mrr": 22138.61}, {"plan_tier": "Enterprise", "accounts": 154, "churn_rate": 0.2208, "avg_realized_ltv": 104708.24, "avg_net_ltv": 76293.26, "avg_current_mrr": 18795.1}, {"plan_tier": "Pro", "accounts": 178, "churn_rate": 0.2191, "avg_realized_ltv": 122013.83, "avg_net_ltv": 90094.96, "avg_current_mrr": 19920.65}], "survival_overall": [{"month": 0, "retained_pct": 0.93}, {"month": 1, "retained_pct": 0.866}, {"month": 2, "retained_pct": 0.786}, {"month": 3, "retained_pct": 0.72}, {"month": 4, "retained_pct": 0.676}, {"month": 5, "retained_pct": 0.632}, {"month": 6, "retained_pct": 0.58}, {"month": 7, "retained_pct": 0.546}, {"month": 8, "retained_pct": 0.506}, {"month": 9, "retained_pct": 0.464}, {"month": 10, "retained_pct": 0.416}, {"month": 11, "retained_pct": 0.388}, {"month": 12, "retained_pct": 0.36}, {"month": 13, "retained_pct": 0.324}, {"month": 14, "retained_pct": 0.284}, {"month": 15, "retained_pct": 0.254}, {"month": 16, "retained_pct": 0.218}, {"month": 17, "retained_pct": 0.188}, {"month": 18, "retained_pct": 0.166}, {"month": 19, "retained_pct": 0.148}, {"month": 20, "retained_pct": 0.108}, {"month": 21, "retained_pct": 0.078}, {"month": 22, "retained_pct": 0.05}, {"month": 23, "retained_pct": 0.026}, {"month": 24, "retained_pct": 0.0}], "survival_by_channel": {"ads": [{"month": 0, "retained_pct": 0.9184}, {"month": 1, "retained_pct": 0.8673}, {"month": 2, "retained_pct": 0.8265}, {"month": 3, "retained_pct": 0.7959}, {"month": 4, "retained_pct": 0.7653}, {"month": 5, "retained_pct": 0.7449}, {"month": 6, "retained_pct": 0.6939}, {"month": 7, "retained_pct": 0.6122}, {"month": 8, "retained_pct": 0.602}, {"month": 9, "retained_pct": 0.5408}, {"month": 10, "retained_pct": 0.4898}, {"month": 11, "retained_pct": 0.4592}, {"month": 12, "retained_pct": 0.4286}, {"month": 13, "retained_pct": 0.3878}, {"month": 14, "retained_pct": 0.3265}, {"month": 15, "retained_pct": 0.2653}, {"month": 16, "retained_pct": 0.2449}, {"month": 17, "retained_pct": 0.2143}, {"month": 18, "retained_pct": 0.1939}, {"month": 19, "retained_pct": 0.1939}, {"month": 20, "retained_pct": 0.102}, {"month": 21, "retained_pct": 0.0816}, {"month": 22, "retained_pct": 0.0816}, {"month": 23, "retained_pct": 0.0204}, {"month": 24, "retained_pct": 0.0}], "event": [{"month": 0, "retained_pct": 0.9167}, {"month": 1, "retained_pct": 0.8229}, {"month": 2, "retained_pct": 0.7396}, {"month": 3, "retained_pct": 0.6562}, {"month": 4, "retained_pct": 0.5833}, {"month": 5, "retained_pct": 0.5312}, {"month": 6, "retained_pct": 0.4792}, {"month": 7, "retained_pct": 0.4375}, {"month": 8, "retained_pct": 0.4271}, {"month": 9, "retained_pct": 0.3958}, {"month": 10, "retained_pct": 0.3646}, {"month": 11, "retained_pct": 0.3542}, {"month": 12, "retained_pct": 0.3438}, {"month": 13, "retained_pct": 0.3229}, {"month": 14, "retained_pct": 0.2604}, {"month": 15, "retained_pct": 0.25}, {"month": 16, "retained_pct": 0.2188}, {"month": 17, "retained_pct": 0.1667}, {"month": 18, "retained_pct": 0.1458}, {"month": 19, "retained_pct": 0.1458}, {"month": 20, "retained_pct": 0.1042}, {"month": 21, "retained_pct": 0.0625}, {"month": 22, "retained_pct": 0.0312}, {"month": 23, "retained_pct": 0.0104}, {"month": 24, "retained_pct": 0.0}], "organic": [{"month": 0, "retained_pct": 0.9561}, {"month": 1, "retained_pct": 0.9035}, {"month": 2, "retained_pct": 0.7632}, {"month": 3, "retained_pct": 0.7105}, {"month": 4, "retained_pct": 0.6754}, {"month": 5, "retained_pct": 0.6228}, {"month": 6, "retained_pct": 0.5702}, {"month": 7, "retained_pct": 0.5439}, {"month": 8, "retained_pct": 0.4649}, {"month": 9, "retained_pct": 0.4298}, {"month": 10, "retained_pct": 0.386}, {"month": 11, "retained_pct": 0.3421}, {"month": 12, "retained_pct": 0.3246}, {"month": 13, "retained_pct": 0.2982}, {"month": 14, "retained_pct": 0.2632}, {"month": 15, "retained_pct": 0.2368}, {"month": 16, "retained_pct": 0.193}, {"month": 17, "retained_pct": 0.1842}, {"month": 18, "retained_pct": 0.1404}, {"month": 19, "retained_pct": 0.1228}, {"month": 20, "retained_pct": 0.1053}, {"month": 21, "retained_pct": 0.0702}, {"month": 22, "retained_pct": 0.0526}, {"month": 23, "retained_pct": 0.0351}, {"month": 24, "retained_pct": 0.0}], "other": [{"month": 0, "retained_pct": 0.9029}, {"month": 1, "retained_pct": 0.8447}, {"month": 2, "retained_pct": 0.7767}, {"month": 3, "retained_pct": 0.6699}, {"month": 4, "retained_pct": 0.6505}, {"month": 5, "retained_pct": 0.6019}, {"month": 6, "retained_pct": 0.5631}, {"month": 7, "retained_pct": 0.5534}, {"month": 8, "retained_pct": 0.5146}, {"month": 9, "retained_pct": 0.466}, {"month": 10, "retained_pct": 0.3786}, {"month": 11, "retained_pct": 0.3495}, {"month": 12, "retained_pct": 0.3204}, {"month": 13, "retained_pct": 0.2913}, {"month": 14, "retained_pct": 0.2621}, {"month": 15, "retained_pct": 0.2524}, {"month": 16, "retained_pct": 0.2039}, {"month": 17, "retained_pct": 0.165}, {"month": 18, "retained_pct": 0.165}, {"month": 19, "retained_pct": 0.1262}, {"month": 20, "retained_pct": 0.0971}, {"month": 21, "retained_pct": 0.0874}, {"month": 22, "retained_pct": 0.0291}, {"month": 23, "retained_pct": 0.0291}, {"month": 24, "retained_pct": 0.0}], "partner": [{"month": 0, "retained_pct": 0.9551}, {"month": 1, "retained_pct": 0.8876}, {"month": 2, "retained_pct": 0.8315}, {"month": 3, "retained_pct": 0.7753}, {"month": 4, "retained_pct": 0.7079}, {"month": 5, "retained_pct": 0.6629}, {"month": 6, "retained_pct": 0.5955}, {"month": 7, "retained_pct": 0.5843}, {"month": 8, "retained_pct": 0.5281}, {"month": 9, "retained_pct": 0.4944}, {"month": 10, "retained_pct": 0.4719}, {"month": 11, "retained_pct": 0.4494}, {"month": 12, "retained_pct": 0.3933}, {"month": 13, "retained_pct": 0.3258}, {"month": 14, "retained_pct": 0.3146}, {"month": 15, "retained_pct": 0.2697}, {"month": 16, "retained_pct": 0.236}, {"month": 17, "retained_pct": 0.2135}, {"month": 18, "retained_pct": 0.191}, {"month": 19, "retained_pct": 0.1573}, {"month": 20, "retained_pct": 0.1348}, {"month": 21, "retained_pct": 0.0899}, {"month": 22, "retained_pct": 0.0562}, {"month": 23, "retained_pct": 0.0337}, {"month": 24, "retained_pct": 0.0}]}, "cohort": [{"cohort": "2023-01", "accounts": 17, "avg_realized_ltv": 190549.3, "churn_rate": 0.2353}, {"cohort": "2023-02", "accounts": 18, "avg_realized_ltv": 180028.15, "churn_rate": 0.3889}, {"cohort": "2023-03", "accounts": 20, "avg_realized_ltv": 199773.1, "churn_rate": 0.25}, {"cohort": "2023-04", "accounts": 15, "avg_realized_ltv": 145557.97, "churn_rate": 0.2}, {"cohort": "2023-05", "accounts": 26, "avg_realized_ltv": 213481.6, "churn_rate": 0.2692}, {"cohort": "2023-06", "accounts": 13, "avg_realized_ltv": 164100.01, "churn_rate": 0.2308}, {"cohort": "2023-07", "accounts": 14, "avg_realized_ltv": 163190.86, "churn_rate": 0.2143}, {"cohort": "2023-08", "accounts": 16, "avg_realized_ltv": 161329.71, "churn_rate": 0.1875}, {"cohort": "2023-09", "accounts": 23, "avg_realized_ltv": 213198.38, "churn_rate": 0.2174}, {"cohort": "2023-10", "accounts": 20, "avg_realized_ltv": 133674.57, "churn_rate": 0.35}, {"cohort": "2023-11", "accounts": 25, "avg_realized_ltv": 140068.97, "churn_rate": 0.28}, {"cohort": "2023-12", "accounts": 20, "avg_realized_ltv": 137603.72, "churn_rate": 0.2}, {"cohort": "2024-01", "accounts": 16, "avg_realized_ltv": 205747.58, "churn_rate": 0.1875}, {"cohort": "2024-02", "accounts": 13, "avg_realized_ltv": 102870.88, "churn_rate": 0.3077}, {"cohort": "2024-03", "accounts": 27, "avg_realized_ltv": 107204.22, "churn_rate": 0.1481}, {"cohort": "2024-04", "accounts": 22, "avg_realized_ltv": 88306.64, "churn_rate": 0.2273}, {"cohort": "2024-05", "accounts": 22, "avg_realized_ltv": 94491.16, "churn_rate": 0.1818}, {"cohort": "2024-06", "accounts": 21, "avg_realized_ltv": 66308.84, "churn_rate": 0.2857}, {"cohort": "2024-07", "accounts": 26, "avg_realized_ltv": 65381.83, "churn_rate": 0.1154}, {"cohort": "2024-08", "accounts": 21, "avg_realized_ltv": 40919.93, "churn_rate": 0.0952}, {"cohort": "2024-09", "accounts": 25, "avg_realized_ltv": 44111.51, "churn_rate": 0.36}, {"cohort": "2024-10", "accounts": 31, "avg_realized_ltv": 28198.75, "churn_rate": 0.2258}, {"cohort": "2024-11", "accounts": 32, "avg_realized_ltv": 19245.36, "churn_rate": 0.125}, {"cohort": "2024-12", "accounts": 17, "avg_realized_ltv": 11818.16, "churn_rate": 0.0588}], "lifecycle_segment": [{"segment": "never_churned", "accounts": 243, "avg_realized_ltv": 117601.82, "avg_net_ltv": 86646.94, "avg_tenure_months": 10.87, "avg_current_mrr": 21442.15}, {"segment": "serial_churner_reactivated", "accounts": 188, "avg_realized_ltv": 106916.67, "avg_net_ltv": 78478.33, "avg_tenure_months": 9.16, "avg_current_mrr": 18701.85}, {"segment": "single_churn", "accounts": 69, "avg_realized_ltv": 125398.71, "avg_net_ltv": 92600.21, "avg_tenure_months": 7.55, "avg_current_mrr": 20771.29}], "reactivation_value": {"accounts_currently_active_after_winback": 277, "pct_of_active_base": 0.7103, "current_mrr_from_winback_accounts": "5746694", "pct_of_current_mrr": 0.7107}, "reactivation_by_channel": [{"channel": "ads", "churned_accounts": 23, "reactivated": 5, "reactivation_rate": 0.2174}, {"channel": "event", "churned_accounts": 29, "reactivated": 4, "reactivation_rate": 0.1379}, {"channel": "partner", "churned_accounts": 13, "reactivated": 1, "reactivation_rate": 0.0769}, {"channel": "organic", "churned_accounts": 20, "reactivated": 1, "reactivation_rate": 0.05}, {"channel": "other", "churned_accounts": 25, "reactivated": 1, "reactivation_rate": 0.04}], "churn_reason": [{"reason_code": "features", "events": 114, "pct_of_churn_events": 0.19, "avg_account_ltv": 124597.46, "preceding_downgrade_rate": 0.0789, "preceding_upgrade_rate": 0.1491, "avg_refund_usd": 16.72}, {"reason_code": "budget", "events": 104, "pct_of_churn_events": 0.1733, "avg_account_ltv": 100886.07, "preceding_downgrade_rate": 0.0577, "preceding_upgrade_rate": 0.2308, "avg_refund_usd": 12.0}, {"reason_code": "support", "events": 104, "pct_of_churn_events": 0.1733, "avg_account_ltv": 118168.04, "preceding_downgrade_rate": 0.125, "preceding_upgrade_rate": 0.2692, "avg_refund_usd": 11.73}, {"reason_code": "unknown", "events": 95, "pct_of_churn_events": 0.1583, "avg_account_ltv": 100424.27, "preceding_downgrade_rate": 0.0947, "preceding_upgrade_rate": 0.2, "avg_refund_usd": 18.34}, {"reason_code": "competitor", "events": 92, "pct_of_churn_events": 0.1533, "avg_account_ltv": 134490.69, "preceding_downgrade_rate": 0.1304, "preceding_upgrade_rate": 0.1848, "avg_refund_usd": 13.08}, {"reason_code": "pricing", "events": 91, "pct_of_churn_events": 0.1517, "avg_account_ltv": 101285.17, "preceding_downgrade_rate": 0.044, "preceding_upgrade_rate": 0.1978, "avg_refund_usd": 14.65}], "support_vs_churn": [{"status": "active", "avg_satisfaction": 3.95, "avg_escalation_rate": 0.044, "avg_ticket_count": 4.02, "avg_resolution_hrs": 36.45}, {"status": "churned", "avg_satisfaction": 4.0, "avg_escalation_rate": 0.0621, "avg_ticket_count": 3.93, "avg_resolution_hrs": 35.49}], "industry_channel_matrix": {"industries": ["Cybersecurity", "DevTools", "EdTech", "FinTech", "HealthTech"], "channels": ["ads", "event", "organic", "other", "partner"], "values": [[121897.0, 95290.0, 103242.0, 101597.0, 135715.0], [87968.0, 105002.0, 167629.0, 102276.0, 116292.0], [103603.0, 75754.0, 124542.0, 97394.0, 113330.0], [171247.0, 98734.0, 77313.0, 138542.0, 111270.0], [146333.0, 106805.0, 117163.0, 94139.0, 126634.0]]}};
+const PRED_DATA = {"config": {"early_window_days": 90, "train_accounts": 422, "cv_folds": 5, "score_accounts_too_young_to_grade": 78, "assumed_gross_margin": 0.78}, "model_comparison": {"baseline_mean": {"mae": 68168.16, "rmse": 98467.47, "r2": 0.0, "r2_std": 0.0}, "linear_regression": {"mae": 60685.79, "rmse": 88382.03, "r2": 0.1315, "r2_std": 0.1143}, "random_forest": {"mae": 60871.47, "rmse": 88425.6, "r2": 0.1304, "r2_std": 0.11}}, "feature_importance": [{"feature": "seats", "importance": 0.46406503116415515}, {"feature": "early_usage_duration", "importance": 0.13482812682083925}, {"feature": "initial_mrr", "importance": 0.12494849283336337}, {"feature": "early_usage_count", "importance": 0.100138342123242}, {"feature": "early_distinct_features", "importance": 0.036396949513889075}, {"feature": "early_usage_events", "importance": 0.03494236930134461}, {"feature": "early_error_count", "importance": 0.024796352016796572}, {"feature": "early_ticket_count", "importance": 0.012209096580957875}, {"feature": "early_beta_usage", "importance": 0.011812921261021748}, {"feature": "plan_tier_Pro", "importance": 0.00929759269685453}, {"feature": "plan_tier_Basic", "importance": 0.006157719085160738}, {"feature": "plan_tier_Enterprise", "importance": 0.004842170870513816}], "test_predictions": [{"account_id": "A-43a9e3", "referral_source": "other", "actual_net_ltv": 90669.48, "predicted_net_ltv": 47692.98}, {"account_id": "A-0a282f", "referral_source": "organic", "actual_net_ltv": 21133.76, "predicted_net_ltv": 72198.21}, {"account_id": "A-1f0ac7", "referral_source": "other", "actual_net_ltv": 59775.13, "predicted_net_ltv": 102196.2}, {"account_id": "A-1b9609", "referral_source": "ads", "actual_net_ltv": 79533.83, "predicted_net_ltv": 73901.58}, {"account_id": "A-a0ca4e", "referral_source": "ads", "actual_net_ltv": 43640.31, "predicted_net_ltv": 84244.07}, {"account_id": "A-e5d6ab", "referral_source": "partner", "actual_net_ltv": 89216.42, "predicted_net_ltv": 68972.19}, {"account_id": "A-7dacce", "referral_source": "event", "actual_net_ltv": 25770.5, "predicted_net_ltv": 71159.89}, {"account_id": "A-10b8da", "referral_source": "partner", "actual_net_ltv": 44157.93, "predicted_net_ltv": 90920.35}, {"account_id": "A-592832", "referral_source": "organic", "actual_net_ltv": 50266.34, "predicted_net_ltv": 94167.56}, {"account_id": "A-6c093d", "referral_source": "partner", "actual_net_ltv": 75330.43, "predicted_net_ltv": 57408.75}, {"account_id": "A-462d45", "referral_source": "partner", "actual_net_ltv": 126209.38, "predicted_net_ltv": 84118.47}, {"account_id": "A-ac14bb", "referral_source": "partner", "actual_net_ltv": 229451.42, "predicted_net_ltv": 82994.68}, {"account_id": "A-ce66f8", "referral_source": "event", "actual_net_ltv": 50697.48, "predicted_net_ltv": 59366.37}, {"account_id": "A-c4ea60", "referral_source": "other", "actual_net_ltv": 41626.39, "predicted_net_ltv": 85259.57}, {"account_id": "A-832ec2", "referral_source": "event", "actual_net_ltv": 39327.02, "predicted_net_ltv": 73345.9}, {"account_id": "A-684255", "referral_source": "ads", "actual_net_ltv": 38588.5, "predicted_net_ltv": 66358.62}, {"account_id": "A-c42f1f", "referral_source": "other", "actual_net_ltv": -119.68, "predicted_net_ltv": 45274.11}, {"account_id": "A-4e44e8", "referral_source": "ads", "actual_net_ltv": 32390.78, "predicted_net_ltv": 66362.34}, {"account_id": "A-30b4ca", "referral_source": "organic", "actual_net_ltv": 391596.74, "predicted_net_ltv": 222988.7}, {"account_id": "A-32fb14", "referral_source": "event", "actual_net_ltv": 28507.29, "predicted_net_ltv": 103914.33}, {"account_id": "A-00cac8", "referral_source": "organic", "actual_net_ltv": 44552.68, "predicted_net_ltv": 68212.48}, {"account_id": "A-35083d", "referral_source": "partner", "actual_net_ltv": 164294.15, "predicted_net_ltv": 97726.88}, {"account_id": "A-eb7fac", "referral_source": "organic", "actual_net_ltv": 280257.71, "predicted_net_ltv": 58677.91}, {"account_id": "A-b20d99", "referral_source": "other", "actual_net_ltv": 50476.98, "predicted_net_ltv": 63409.12}, {"account_id": "A-396e5f", "referral_source": "other", "actual_net_ltv": 12184.99, "predicted_net_ltv": 83818.49}, {"account_id": "A-45ce7a", "referral_source": "ads", "actual_net_ltv": 31311.24, "predicted_net_ltv": 58581.88}, {"account_id": "A-08e34e", "referral_source": "event", "actual_net_ltv": 40633.59, "predicted_net_ltv": 108247.02}, {"account_id": "A-8145a0", "referral_source": "partner", "actual_net_ltv": 125118.69, "predicted_net_ltv": 80100.72}, {"account_id": "A-bad8c1", "referral_source": "organic", "actual_net_ltv": 77282.82, "predicted_net_ltv": 85235.52}, {"account_id": "A-44dc83", "referral_source": "other", "actual_net_ltv": -7806.61, "predicted_net_ltv": 90148.5}, {"account_id": "A-f446b6", "referral_source": "ads", "actual_net_ltv": 71105.82, "predicted_net_ltv": 62831.44}, {"account_id": "A-a45270", "referral_source": "ads", "actual_net_ltv": 61618.45, "predicted_net_ltv": 73611.8}, {"account_id": "A-05f0e5", "referral_source": "partner", "actual_net_ltv": 330773.32, "predicted_net_ltv": 146172.15}, {"account_id": "A-9077b0", "referral_source": "ads", "actual_net_ltv": -1755.08, "predicted_net_ltv": 76445.46}, {"account_id": "A-7f8241", "referral_source": "organic", "actual_net_ltv": 344034.12, "predicted_net_ltv": 186598.2}, {"account_id": "A-2bc93d", "referral_source": "event", "actual_net_ltv": 300518.84, "predicted_net_ltv": 91200.55}, {"account_id": "A-f3ff05", "referral_source": "other", "actual_net_ltv": 39192.88, "predicted_net_ltv": 77803.08}, {"account_id": "A-2d4502", "referral_source": "event", "actual_net_ltv": 69961.77, "predicted_net_ltv": 44255.19}, {"account_id": "A-6a4e2d", "referral_source": "partner", "actual_net_ltv": 115009.23, "predicted_net_ltv": 67936.82}, {"account_id": "A-eb7c38", "referral_source": "organic", "actual_net_ltv": 130328.5, "predicted_net_ltv": 74660.07}, {"account_id": "A-3b5cd1", "referral_source": "event", "actual_net_ltv": 99955.31, "predicted_net_ltv": 75647.93}, {"account_id": "A-b2225d", "referral_source": "ads", "actual_net_ltv": 80931.68, "predicted_net_ltv": 176179.99}, {"account_id": "A-94f8c9", "referral_source": "other", "actual_net_ltv": 70107.47, "predicted_net_ltv": 82873.95}, {"account_id": "A-02fac6", "referral_source": "event", "actual_net_ltv": 140272.81, "predicted_net_ltv": 91094.35}, {"account_id": "A-c1dfe1", "referral_source": "ads", "actual_net_ltv": 136973.78, "predicted_net_ltv": 94697.85}, {"account_id": "A-32728c", "referral_source": "event", "actual_net_ltv": 49672.14, "predicted_net_ltv": 103885.01}, {"account_id": "A-4c38bc", "referral_source": "event", "actual_net_ltv": 173042.77, "predicted_net_ltv": 167648.78}, {"account_id": "A-1b707d", "referral_source": "organic", "actual_net_ltv": 65682.54, "predicted_net_ltv": 32274.33}, {"account_id": "A-6f8ad2", "referral_source": "organic", "actual_net_ltv": 68808.72, "predicted_net_ltv": 98056.71}, {"account_id": "A-4d1e75", "referral_source": "other", "actual_net_ltv": 67726.9, "predicted_net_ltv": 76951.34}, {"account_id": "A-9ee962", "referral_source": "ads", "actual_net_ltv": 70920.97, "predicted_net_ltv": 44379.7}, {"account_id": "A-378b99", "referral_source": "ads", "actual_net_ltv": 13273.8, "predicted_net_ltv": 80262.34}, {"account_id": "A-94d3da", "referral_source": "other", "actual_net_ltv": 187678.01, "predicted_net_ltv": 186850.97}, {"account_id": "A-e351e1", "referral_source": "other", "actual_net_ltv": 4509.55, "predicted_net_ltv": 143846.25}, {"account_id": "A-9badbd", "referral_source": "ads", "actual_net_ltv": 61620.12, "predicted_net_ltv": 108507.82}, {"account_id": "A-7e0a10", "referral_source": "ads", "actual_net_ltv": 214989.34, "predicted_net_ltv": 132391.64}, {"account_id": "A-526d93", "referral_source": "organic", "actual_net_ltv": 148578.58, "predicted_net_ltv": 149989.54}, {"account_id": "A-f92792", "referral_source": "ads", "actual_net_ltv": 50095.3, "predicted_net_ltv": 62569.08}, {"account_id": "A-84ebe4", "referral_source": "ads", "actual_net_ltv": 174997.59, "predicted_net_ltv": 57456.85}, {"account_id": "A-5b4ebb", "referral_source": "other", "actual_net_ltv": 36807.2, "predicted_net_ltv": 99023.48}, {"account_id": "A-9b9fe9", "referral_source": "other", "actual_net_ltv": 43092.31, "predicted_net_ltv": 67664.16}, {"account_id": "A-a8b49c", "referral_source": "partner", "actual_net_ltv": 47614.65, "predicted_net_ltv": 75074.89}, {"account_id": "A-a1bbb6", "referral_source": "organic", "actual_net_ltv": 195389.37, "predicted_net_ltv": 83815.5}, {"account_id": "A-c45b23", "referral_source": "partner", "actual_net_ltv": 17193.74, "predicted_net_ltv": 69621.75}, {"account_id": "A-02cd81", "referral_source": "other", "actual_net_ltv": 158587.42, "predicted_net_ltv": 152684.45}, {"account_id": "A-ee42db", "referral_source": "ads", "actual_net_ltv": 66229.8, "predicted_net_ltv": 75244.27}, {"account_id": "A-432483", "referral_source": "ads", "actual_net_ltv": 227598.86, "predicted_net_ltv": 58050.75}, {"account_id": "A-9208f0", "referral_source": "organic", "actual_net_ltv": 38930.32, "predicted_net_ltv": 53789.84}, {"account_id": "A-98a59a", "referral_source": "partner", "actual_net_ltv": 189325.26, "predicted_net_ltv": 136992.05}, {"account_id": "A-fe79a5", "referral_source": "ads", "actual_net_ltv": 33305.53, "predicted_net_ltv": 42120.99}, {"account_id": "A-726cfa", "referral_source": "partner", "actual_net_ltv": 191950.37, "predicted_net_ltv": 97989.1}, {"account_id": "A-271f46", "referral_source": "event", "actual_net_ltv": 81948.06, "predicted_net_ltv": 83248.1}, {"account_id": "A-157070", "referral_source": "ads", "actual_net_ltv": 119262.74, "predicted_net_ltv": 74655.98}, {"account_id": "A-40a557", "referral_source": "partner", "actual_net_ltv": 108975.65, "predicted_net_ltv": 87723.49}, {"account_id": "A-91e948", "referral_source": "partner", "actual_net_ltv": 108013.4, "predicted_net_ltv": 153182.01}, {"account_id": "A-104f1a", "referral_source": "other", "actual_net_ltv": 17812.21, "predicted_net_ltv": 77836.27}, {"account_id": "A-7988d1", "referral_source": "other", "actual_net_ltv": 35066.6, "predicted_net_ltv": 116462.09}, {"account_id": "A-faa28c", "referral_source": "organic", "actual_net_ltv": 230008.62, "predicted_net_ltv": 204869.44}, {"account_id": "A-f25509", "referral_source": "other", "actual_net_ltv": 59922.13, "predicted_net_ltv": 118038.23}, {"account_id": "A-3a5ad8", "referral_source": "organic", "actual_net_ltv": 99979.99, "predicted_net_ltv": 66525.19}, {"account_id": "A-65a46c", "referral_source": "event", "actual_net_ltv": 142320.16, "predicted_net_ltv": 92813.52}, {"account_id": "A-8b25f2", "referral_source": "ads", "actual_net_ltv": 34890.75, "predicted_net_ltv": 78663.25}, {"account_id": "A-adc1f3", "referral_source": "organic", "actual_net_ltv": 20599.1, "predicted_net_ltv": 53527.77}, {"account_id": "A-503d5a", "referral_source": "other", "actual_net_ltv": 46635.97, "predicted_net_ltv": 82614.25}, {"account_id": "A-186a44", "referral_source": "ads", "actual_net_ltv": 42501.73, "predicted_net_ltv": 119679.79}, {"account_id": "A-e888d1", "referral_source": "other", "actual_net_ltv": 82097.01, "predicted_net_ltv": 82099.23}, {"account_id": "A-69fad4", "referral_source": "ads", "actual_net_ltv": 58858.78, "predicted_net_ltv": 78013.31}, {"account_id": "A-9289f6", "referral_source": "event", "actual_net_ltv": 64388.23, "predicted_net_ltv": 65667.66}, {"account_id": "A-f19409", "referral_source": "other", "actual_net_ltv": 208531.47, "predicted_net_ltv": 98337.24}, {"account_id": "A-2e3bad", "referral_source": "other", "actual_net_ltv": 280855.63, "predicted_net_ltv": 226235.78}, {"account_id": "A-484819", "referral_source": "organic", "actual_net_ltv": 163794.39, "predicted_net_ltv": 124444.36}, {"account_id": "A-425e76", "referral_source": "other", "actual_net_ltv": 96002.36, "predicted_net_ltv": 81255.62}, {"account_id": "A-e83938", "referral_source": "other", "actual_net_ltv": 32445.13, "predicted_net_ltv": 81109.58}, {"account_id": "A-ad296b", "referral_source": "event", "actual_net_ltv": 49546.59, "predicted_net_ltv": 97289.89}, {"account_id": "A-e51ec7", "referral_source": "partner", "actual_net_ltv": 86011.66, "predicted_net_ltv": 106993.45}, {"account_id": "A-0aaf6e", "referral_source": "organic", "actual_net_ltv": 11726.83, "predicted_net_ltv": 79855.07}, {"account_id": "A-e61e98", "referral_source": "partner", "actual_net_ltv": 75602.75, "predicted_net_ltv": 79908.73}, {"account_id": "A-92a333", "referral_source": "event", "actual_net_ltv": 109515.65, "predicted_net_ltv": 68083.99}, {"account_id": "A-95b24a", "referral_source": "event", "actual_net_ltv": 254303.44, "predicted_net_ltv": 180402.22}, {"account_id": "A-42e5e1", "referral_source": "ads", "actual_net_ltv": 7488.09, "predicted_net_ltv": 80469.02}, {"account_id": "A-7d514c", "referral_source": "organic", "actual_net_ltv": 93716.37, "predicted_net_ltv": 78548.56}, {"account_id": "A-65aeb5", "referral_source": "partner", "actual_net_ltv": 147615.81, "predicted_net_ltv": 95644.1}, {"account_id": "A-e2cd1b", "referral_source": "other", "actual_net_ltv": 33243.27, "predicted_net_ltv": 100678.81}, {"account_id": "A-180abf", "referral_source": "event", "actual_net_ltv": 132234.32, "predicted_net_ltv": 213601.42}, {"account_id": "A-f17767", "referral_source": "event", "actual_net_ltv": 146711.83, "predicted_net_ltv": 81430.77}, {"account_id": "A-5a184f", "referral_source": "other", "actual_net_ltv": 184447.6, "predicted_net_ltv": 44165.48}, {"account_id": "A-7df7a7", "referral_source": "organic", "actual_net_ltv": 225629.48, "predicted_net_ltv": 69251.54}, {"account_id": "A-52dd88", "referral_source": "ads", "actual_net_ltv": 87806.56, "predicted_net_ltv": 102729.1}, {"account_id": "A-bece89", "referral_source": "event", "actual_net_ltv": 130278.91, "predicted_net_ltv": 56508.34}, {"account_id": "A-029f69", "referral_source": "event", "actual_net_ltv": 48541.14, "predicted_net_ltv": 69871.95}, {"account_id": "A-5c046d", "referral_source": "partner", "actual_net_ltv": 114075.65, "predicted_net_ltv": 146199.8}, {"account_id": "A-ae052e", "referral_source": "other", "actual_net_ltv": 18082.14, "predicted_net_ltv": 144452.99}, {"account_id": "A-9f9299", "referral_source": "organic", "actual_net_ltv": 203677.21, "predicted_net_ltv": 158829.89}, {"account_id": "A-96e141", "referral_source": "partner", "actual_net_ltv": 69289.46, "predicted_net_ltv": 35100.68}, {"account_id": "A-117171", "referral_source": "organic", "actual_net_ltv": 15679.33, "predicted_net_ltv": 148121.56}, {"account_id": "A-313be3", "referral_source": "partner", "actual_net_ltv": 118098.11, "predicted_net_ltv": 93998.28}, {"account_id": "A-bbc346", "referral_source": "partner", "actual_net_ltv": 53829.95, "predicted_net_ltv": 88007.22}, {"account_id": "A-c16101", "referral_source": "other", "actual_net_ltv": 17544.87, "predicted_net_ltv": 84059.21}, {"account_id": "A-50f3f7", "referral_source": "partner", "actual_net_ltv": 149092.27, "predicted_net_ltv": 200617.6}, {"account_id": "A-7da956", "referral_source": "event", "actual_net_ltv": 18723.59, "predicted_net_ltv": 83415.52}, {"account_id": "A-019782", "referral_source": "event", "actual_net_ltv": 68454.3, "predicted_net_ltv": 79334.48}, {"account_id": "A-df10db", "referral_source": "other", "actual_net_ltv": 57612.89, "predicted_net_ltv": 69993.18}, {"account_id": "A-3932db", "referral_source": "other", "actual_net_ltv": 23016.18, "predicted_net_ltv": 81376.33}, {"account_id": "A-4f18f0", "referral_source": "other", "actual_net_ltv": 89811.55, "predicted_net_ltv": 88264.88}, {"account_id": "A-4c6f11", "referral_source": "organic", "actual_net_ltv": 43654.63, "predicted_net_ltv": 68753.39}, {"account_id": "A-8ae05d", "referral_source": "other", "actual_net_ltv": 37020.76, "predicted_net_ltv": 226747.56}, {"account_id": "A-eafc6e", "referral_source": "partner", "actual_net_ltv": 115656.26, "predicted_net_ltv": 56235.5}, {"account_id": "A-37f969", "referral_source": "partner", "actual_net_ltv": 147807.93, "predicted_net_ltv": 104119.5}, {"account_id": "A-10b8f2", "referral_source": "organic", "actual_net_ltv": 263694.93, "predicted_net_ltv": 134191.59}, {"account_id": "A-439b2f", "referral_source": "ads", "actual_net_ltv": 1684.74, "predicted_net_ltv": 42471.03}, {"account_id": "A-544d0a", "referral_source": "organic", "actual_net_ltv": 52809.55, "predicted_net_ltv": 56072.68}, {"account_id": "A-ba6516", "referral_source": "ads", "actual_net_ltv": 139288.3, "predicted_net_ltv": 124298.64}, {"account_id": "A-038089", "referral_source": "other", "actual_net_ltv": 2134.05, "predicted_net_ltv": 35329.5}, {"account_id": "A-afa505", "referral_source": "partner", "actual_net_ltv": 276089.8, "predicted_net_ltv": 210623.58}, {"account_id": "A-d5a319", "referral_source": "other", "actual_net_ltv": 194402.03, "predicted_net_ltv": 80697.97}, {"account_id": "A-f97b9a", "referral_source": "event", "actual_net_ltv": 125226.23, "predicted_net_ltv": 84131.61}, {"account_id": "A-2f6a32", "referral_source": "organic", "actual_net_ltv": 6891.17, "predicted_net_ltv": 79461.03}, {"account_id": "A-856b1e", "referral_source": "partner", "actual_net_ltv": 53100.46, "predicted_net_ltv": 55244.78}, {"account_id": "A-d27f50", "referral_source": "ads", "actual_net_ltv": 59535.16, "predicted_net_ltv": 146977.71}, {"account_id": "A-e36807", "referral_source": "other", "actual_net_ltv": 25068.0, "predicted_net_ltv": 87666.74}, {"account_id": "A-ff79f2", "referral_source": "ads", "actual_net_ltv": 46851.76, "predicted_net_ltv": 74586.46}, {"account_id": "A-5b1bcd", "referral_source": "organic", "actual_net_ltv": 959428.55, "predicted_net_ltv": 185345.51}, {"account_id": "A-71615e", "referral_source": "organic", "actual_net_ltv": 112055.64, "predicted_net_ltv": 94578.79}, {"account_id": "A-794a0b", "referral_source": "organic", "actual_net_ltv": 60412.2, "predicted_net_ltv": 63274.44}, {"account_id": "A-86902e", "referral_source": "other", "actual_net_ltv": 208410.33, "predicted_net_ltv": 84056.05}, {"account_id": "A-0532a9", "referral_source": "event", "actual_net_ltv": 11844.03, "predicted_net_ltv": 88779.76}, {"account_id": "A-9779ad", "referral_source": "event", "actual_net_ltv": 200431.96, "predicted_net_ltv": 181511.38}, {"account_id": "A-f45426", "referral_source": "organic", "actual_net_ltv": 18131.19, "predicted_net_ltv": 81100.41}, {"account_id": "A-c1e51e", "referral_source": "organic", "actual_net_ltv": 13296.55, "predicted_net_ltv": 66334.77}, {"account_id": "A-fa3095", "referral_source": "ads", "actual_net_ltv": 454200.91, "predicted_net_ltv": 180819.72}, {"account_id": "A-ad64c6", "referral_source": "event", "actual_net_ltv": 50827.13, "predicted_net_ltv": 51971.57}, {"account_id": "A-39b19f", "referral_source": "partner", "actual_net_ltv": 115571.87, "predicted_net_ltv": 72554.86}, {"account_id": "A-56962b", "referral_source": "partner", "actual_net_ltv": 70958.93, "predicted_net_ltv": 133467.04}, {"account_id": "A-e60f9d", "referral_source": "other", "actual_net_ltv": 64581.72, "predicted_net_ltv": 90224.22}, {"account_id": "A-158f4e", "referral_source": "other", "actual_net_ltv": 264436.22, "predicted_net_ltv": 191248.8}, {"account_id": "A-5b051a", "referral_source": "event", "actual_net_ltv": 2556.87, "predicted_net_ltv": 58437.04}, {"account_id": "A-296d7c", "referral_source": "other", "actual_net_ltv": -1721.39, "predicted_net_ltv": 73010.86}, {"account_id": "A-1619f8", "referral_source": "organic", "actual_net_ltv": 66547.12, "predicted_net_ltv": 154079.03}, {"account_id": "A-a1b80b", "referral_source": "organic", "actual_net_ltv": 182838.99, "predicted_net_ltv": 138352.59}, {"account_id": "A-702032", "referral_source": "ads", "actual_net_ltv": 34330.42, "predicted_net_ltv": 88095.66}, {"account_id": "A-7a0d69", "referral_source": "ads", "actual_net_ltv": 15043.73, "predicted_net_ltv": 75956.72}, {"account_id": "A-22d9d2", "referral_source": "event", "actual_net_ltv": 50084.32, "predicted_net_ltv": 114541.07}, {"account_id": "A-b9eed8", "referral_source": "organic", "actual_net_ltv": 48770.32, "predicted_net_ltv": 104413.88}, {"account_id": "A-dfbd31", "referral_source": "partner", "actual_net_ltv": 58826.51, "predicted_net_ltv": 80412.55}, {"account_id": "A-8e47ca", "referral_source": "organic", "actual_net_ltv": 136054.19, "predicted_net_ltv": 86101.14}, {"account_id": "A-4437e4", "referral_source": "event", "actual_net_ltv": 80128.39, "predicted_net_ltv": 72334.69}, {"account_id": "A-779e4e", "referral_source": "organic", "actual_net_ltv": 322848.76, "predicted_net_ltv": 71320.13}, {"account_id": "A-53f4e3", "referral_source": "event", "actual_net_ltv": 20235.19, "predicted_net_ltv": 78473.11}, {"account_id": "A-692f18", "referral_source": "other", "actual_net_ltv": 116245.77, "predicted_net_ltv": 101090.47}, {"account_id": "A-13466a", "referral_source": "event", "actual_net_ltv": 67004.71, "predicted_net_ltv": 32664.09}, {"account_id": "A-1986ca", "referral_source": "ads", "actual_net_ltv": 158385.93, "predicted_net_ltv": 112633.68}, {"account_id": "A-0cc442", "referral_source": "organic", "actual_net_ltv": 123181.9, "predicted_net_ltv": 164609.84}, {"account_id": "A-c608c8", "referral_source": "ads", "actual_net_ltv": 56114.11, "predicted_net_ltv": 59576.64}, {"account_id": "A-3be56b", "referral_source": "event", "actual_net_ltv": 80147.93, "predicted_net_ltv": 66454.44}, {"account_id": "A-354f12", "referral_source": "ads", "actual_net_ltv": 38018.76, "predicted_net_ltv": 78452.5}, {"account_id": "A-68f37c", "referral_source": "ads", "actual_net_ltv": 376550.11, "predicted_net_ltv": 107902.1}, {"account_id": "A-aa9511", "referral_source": "other", "actual_net_ltv": 354218.59, "predicted_net_ltv": 93082.19}, {"account_id": "A-af0cd2", "referral_source": "other", "actual_net_ltv": 64098.95, "predicted_net_ltv": 113980.74}, {"account_id": "A-c222ab", "referral_source": "other", "actual_net_ltv": 27048.34, "predicted_net_ltv": 137812.84}, {"account_id": "A-34d880", "referral_source": "ads", "actual_net_ltv": 97884.13, "predicted_net_ltv": 109335.52}, {"account_id": "A-508199", "referral_source": "event", "actual_net_ltv": 58570.07, "predicted_net_ltv": 58957.18}, {"account_id": "A-f03140", "referral_source": "event", "actual_net_ltv": 96417.53, "predicted_net_ltv": 123534.46}, {"account_id": "A-fa2041", "referral_source": "organic", "actual_net_ltv": 63118.39, "predicted_net_ltv": 82684.36}, {"account_id": "A-de58ca", "referral_source": "organic", "actual_net_ltv": 195337.9, "predicted_net_ltv": 82116.9}, {"account_id": "A-05d3b3", "referral_source": "ads", "actual_net_ltv": 90435.0, "predicted_net_ltv": 60781.37}, {"account_id": "A-249769", "referral_source": "event", "actual_net_ltv": 54578.43, "predicted_net_ltv": 73644.44}, {"account_id": "A-e43bf7", "referral_source": "other", "actual_net_ltv": 408208.35, "predicted_net_ltv": 170050.02}, {"account_id": "A-eb2fdc", "referral_source": "organic", "actual_net_ltv": 125860.43, "predicted_net_ltv": 168318.03}, {"account_id": "A-e1462e", "referral_source": "partner", "actual_net_ltv": 124966.25, "predicted_net_ltv": 87784.13}, {"account_id": "A-cab532", "referral_source": "organic", "actual_net_ltv": 178547.88, "predicted_net_ltv": 108338.68}, {"account_id": "A-9123ac", "referral_source": "organic", "actual_net_ltv": 87586.57, "predicted_net_ltv": 72820.08}, {"account_id": "A-6e08f3", "referral_source": "event", "actual_net_ltv": 85897.57, "predicted_net_ltv": 58666.28}, {"account_id": "A-d922bf", "referral_source": "ads", "actual_net_ltv": 127062.84, "predicted_net_ltv": 100023.1}, {"account_id": "A-8ed5dd", "referral_source": "event", "actual_net_ltv": 89261.72, "predicted_net_ltv": 78599.75}, {"account_id": "A-3c1a3f", "referral_source": "event", "actual_net_ltv": 76531.44, "predicted_net_ltv": 67078.51}, {"account_id": "A-b2af2e", "referral_source": "event", "actual_net_ltv": 3151.64, "predicted_net_ltv": 39753.02}, {"account_id": "A-9bfc9f", "referral_source": "ads", "actual_net_ltv": 77964.81, "predicted_net_ltv": 234044.98}, {"account_id": "A-4ae22a", "referral_source": "other", "actual_net_ltv": 28178.64, "predicted_net_ltv": 49308.82}, {"account_id": "A-fda07f", "referral_source": "partner", "actual_net_ltv": 51814.86, "predicted_net_ltv": 85836.42}, {"account_id": "A-977ca0", "referral_source": "partner", "actual_net_ltv": 361505.21, "predicted_net_ltv": 72607.03}, {"account_id": "A-ab438f", "referral_source": "ads", "actual_net_ltv": 16474.76, "predicted_net_ltv": 37243.18}, {"account_id": "A-e89151", "referral_source": "organic", "actual_net_ltv": 78749.25, "predicted_net_ltv": 96542.74}, {"account_id": "A-40906c", "referral_source": "ads", "actual_net_ltv": 173990.61, "predicted_net_ltv": 279257.45}, {"account_id": "A-81edc3", "referral_source": "ads", "actual_net_ltv": 71187.95, "predicted_net_ltv": 89610.49}, {"account_id": "A-328bd0", "referral_source": "partner", "actual_net_ltv": 101739.36, "predicted_net_ltv": 75681.54}, {"account_id": "A-b3fe05", "referral_source": "partner", "actual_net_ltv": 59206.99, "predicted_net_ltv": 72537.37}, {"account_id": "A-09540c", "referral_source": "event", "actual_net_ltv": 94661.2, "predicted_net_ltv": 152140.66}, {"account_id": "A-e693b6", "referral_source": "event", "actual_net_ltv": 165693.99, "predicted_net_ltv": 119697.79}, {"account_id": "A-2446e3", "referral_source": "organic", "actual_net_ltv": 79213.65, "predicted_net_ltv": 110918.27}, {"account_id": "A-241e75", "referral_source": "partner", "actual_net_ltv": 9334.14, "predicted_net_ltv": 47396.06}, {"account_id": "A-922109", "referral_source": "ads", "actual_net_ltv": 61367.24, "predicted_net_ltv": 78930.79}, {"account_id": "A-ff3c73", "referral_source": "other", "actual_net_ltv": 44308.66, "predicted_net_ltv": 99631.12}, {"account_id": "A-8b0451", "referral_source": "event", "actual_net_ltv": 19412.83, "predicted_net_ltv": 180908.63}, {"account_id": "A-331424", "referral_source": "organic", "actual_net_ltv": 39119.2, "predicted_net_ltv": 73849.26}, {"account_id": "A-51ec1b", "referral_source": "ads", "actual_net_ltv": 26918.33, "predicted_net_ltv": 37468.37}, {"account_id": "A-bcf664", "referral_source": "other", "actual_net_ltv": 67093.53, "predicted_net_ltv": 95235.39}, {"account_id": "A-90a8c8", "referral_source": "organic", "actual_net_ltv": 57236.53, "predicted_net_ltv": 91751.54}, {"account_id": "A-86cdb4", "referral_source": "partner", "actual_net_ltv": -1308.93, "predicted_net_ltv": 64904.47}, {"account_id": "A-dbc825", "referral_source": "partner", "actual_net_ltv": 172503.37, "predicted_net_ltv": 91607.17}, {"account_id": "A-7c4956", "referral_source": "ads", "actual_net_ltv": 21791.11, "predicted_net_ltv": 78447.87}, {"account_id": "A-3ce5b8", "referral_source": "ads", "actual_net_ltv": 122848.3, "predicted_net_ltv": 106576.07}, {"account_id": "A-bd4708", "referral_source": "ads", "actual_net_ltv": 75776.35, "predicted_net_ltv": 194426.43}, {"account_id": "A-993085", "referral_source": "ads", "actual_net_ltv": 406401.09, "predicted_net_ltv": 136061.87}, {"account_id": "A-92a3af", "referral_source": "organic", "actual_net_ltv": 75451.87, "predicted_net_ltv": 116457.89}, {"account_id": "A-151c9a", "referral_source": "ads", "actual_net_ltv": 109041.62, "predicted_net_ltv": 60497.78}, {"account_id": "A-474ad4", "referral_source": "organic", "actual_net_ltv": 40230.37, "predicted_net_ltv": 73345.99}, {"account_id": "A-4ef964", "referral_source": "organic", "actual_net_ltv": 55026.75, "predicted_net_ltv": 107665.32}, {"account_id": "A-fd9422", "referral_source": "organic", "actual_net_ltv": 82984.33, "predicted_net_ltv": 179852.19}, {"account_id": "A-0baac2", "referral_source": "organic", "actual_net_ltv": 20233.63, "predicted_net_ltv": 78264.16}, {"account_id": "A-560d27", "referral_source": "organic", "actual_net_ltv": 157343.67, "predicted_net_ltv": 153898.83}, {"account_id": "A-2789e3", "referral_source": "partner", "actual_net_ltv": 25862.06, "predicted_net_ltv": 78271.86}, {"account_id": "A-902ef7", "referral_source": "other", "actual_net_ltv": 61706.94, "predicted_net_ltv": 249962.45}, {"account_id": "A-20736a", "referral_source": "organic", "actual_net_ltv": 90628.68, "predicted_net_ltv": 136077.96}, {"account_id": "A-cea1f0", "referral_source": "event", "actual_net_ltv": 11349.13, "predicted_net_ltv": 88168.23}, {"account_id": "A-ef84cf", "referral_source": "partner", "actual_net_ltv": 35163.47, "predicted_net_ltv": 61837.04}, {"account_id": "A-d49cc5", "referral_source": "event", "actual_net_ltv": 55239.07, "predicted_net_ltv": 216546.23}, {"account_id": "A-67be94", "referral_source": "organic", "actual_net_ltv": 102404.14, "predicted_net_ltv": 49435.48}, {"account_id": "A-4e960a", "referral_source": "other", "actual_net_ltv": 142748.43, "predicted_net_ltv": 73539.74}, {"account_id": "A-c37cab", "referral_source": "event", "actual_net_ltv": 60765.88, "predicted_net_ltv": 97692.23}, {"account_id": "A-443b7c", "referral_source": "other", "actual_net_ltv": 46115.28, "predicted_net_ltv": 73894.75}, {"account_id": "A-1f7acb", "referral_source": "ads", "actual_net_ltv": 291572.97, "predicted_net_ltv": 235753.97}, {"account_id": "A-f51f16", "referral_source": "partner", "actual_net_ltv": 84862.08, "predicted_net_ltv": 67432.98}, {"account_id": "A-5a3eb9", "referral_source": "other", "actual_net_ltv": 113827.12, "predicted_net_ltv": 107779.27}, {"account_id": "A-417d2f", "referral_source": "partner", "actual_net_ltv": 173626.53, "predicted_net_ltv": 78440.81}, {"account_id": "A-e98302", "referral_source": "ads", "actual_net_ltv": 59895.86, "predicted_net_ltv": 54294.03}, {"account_id": "A-bcf87c", "referral_source": "event", "actual_net_ltv": 21968.45, "predicted_net_ltv": 91090.42}, {"account_id": "A-54ecc2", "referral_source": "partner", "actual_net_ltv": 75199.31, "predicted_net_ltv": 72366.23}, {"account_id": "A-625d0b", "referral_source": "ads", "actual_net_ltv": 5330.13, "predicted_net_ltv": 66734.63}, {"account_id": "A-fce879", "referral_source": "partner", "actual_net_ltv": 9805.21, "predicted_net_ltv": 79668.15}, {"account_id": "A-6da850", "referral_source": "organic", "actual_net_ltv": 84489.0, "predicted_net_ltv": 88303.17}, {"account_id": "A-342303", "referral_source": "other", "actual_net_ltv": 5040.15, "predicted_net_ltv": 38878.76}, {"account_id": "A-e7a1e2", "referral_source": "event", "actual_net_ltv": 30508.83, "predicted_net_ltv": 98153.02}, {"account_id": "A-f1f639", "referral_source": "ads", "actual_net_ltv": 14272.86, "predicted_net_ltv": 27752.35}, {"account_id": "A-a865bd", "referral_source": "organic", "actual_net_ltv": 124298.29, "predicted_net_ltv": 88809.12}, {"account_id": "A-4e631b", "referral_source": "other", "actual_net_ltv": 104168.31, "predicted_net_ltv": 145619.64}, {"account_id": "A-7f6b86", "referral_source": "partner", "actual_net_ltv": 72681.58, "predicted_net_ltv": 167603.18}, {"account_id": "A-8adedc", "referral_source": "event", "actual_net_ltv": 86351.16, "predicted_net_ltv": 146424.79}, {"account_id": "A-2edab2", "referral_source": "event", "actual_net_ltv": 43346.36, "predicted_net_ltv": 47303.26}, {"account_id": "A-a6d261", "referral_source": "other", "actual_net_ltv": 206784.46, "predicted_net_ltv": 93767.84}, {"account_id": "A-202b67", "referral_source": "organic", "actual_net_ltv": 69058.32, "predicted_net_ltv": 76410.84}, {"account_id": "A-00bed1", "referral_source": "ads", "actual_net_ltv": 167337.44, "predicted_net_ltv": 93140.75}, {"account_id": "A-ffc04f", "referral_source": "ads", "actual_net_ltv": 46983.7, "predicted_net_ltv": 92300.74}, {"account_id": "A-65c341", "referral_source": "ads", "actual_net_ltv": 159388.15, "predicted_net_ltv": 64515.61}, {"account_id": "A-dcc2f0", "referral_source": "organic", "actual_net_ltv": 116635.54, "predicted_net_ltv": 67586.57}, {"account_id": "A-3d957b", "referral_source": "other", "actual_net_ltv": 29669.41, "predicted_net_ltv": 49780.56}, {"account_id": "A-883b7d", "referral_source": "other", "actual_net_ltv": 121068.18, "predicted_net_ltv": 101633.91}, {"account_id": "A-dcc3f1", "referral_source": "event", "actual_net_ltv": 42206.43, "predicted_net_ltv": 48789.33}, {"account_id": "A-c62e55", "referral_source": "partner", "actual_net_ltv": 75123.97, "predicted_net_ltv": 43686.76}, {"account_id": "A-e40f45", "referral_source": "organic", "actual_net_ltv": 50068.97, "predicted_net_ltv": 101777.02}, {"account_id": "A-96215d", "referral_source": "event", "actual_net_ltv": 26494.01, "predicted_net_ltv": 76735.51}, {"account_id": "A-2b9d3e", "referral_source": "partner", "actual_net_ltv": 20445.69, "predicted_net_ltv": 35679.58}, {"account_id": "A-b7724f", "referral_source": "organic", "actual_net_ltv": 9110.19, "predicted_net_ltv": 49666.59}, {"account_id": "A-eb1312", "referral_source": "partner", "actual_net_ltv": 16454.07, "predicted_net_ltv": 122294.7}, {"account_id": "A-df1e44", "referral_source": "organic", "actual_net_ltv": 41522.87, "predicted_net_ltv": 35204.14}, {"account_id": "A-a8d89d", "referral_source": "ads", "actual_net_ltv": 190887.84, "predicted_net_ltv": 108425.9}, {"account_id": "A-600734", "referral_source": "organic", "actual_net_ltv": 90490.09, "predicted_net_ltv": 115532.32}, {"account_id": "A-86fc1d", "referral_source": "partner", "actual_net_ltv": 34979.12, "predicted_net_ltv": 73017.09}, {"account_id": "A-acb7f7", "referral_source": "ads", "actual_net_ltv": 212958.41, "predicted_net_ltv": 192479.86}, {"account_id": "A-712f1c", "referral_source": "ads", "actual_net_ltv": 247034.95, "predicted_net_ltv": 74506.0}, {"account_id": "A-3793ee", "referral_source": "organic", "actual_net_ltv": 110348.06, "predicted_net_ltv": 106594.72}, {"account_id": "A-9a532a", "referral_source": "partner", "actual_net_ltv": 26825.23, "predicted_net_ltv": 97835.89}, {"account_id": "A-2ebb4b", "referral_source": "ads", "actual_net_ltv": 245540.62, "predicted_net_ltv": 112971.53}, {"account_id": "A-c9bb3e", "referral_source": "ads", "actual_net_ltv": 52062.34, "predicted_net_ltv": 83007.04}, {"account_id": "A-4814a3", "referral_source": "event", "actual_net_ltv": 101351.46, "predicted_net_ltv": 269071.03}, {"account_id": "A-b7b7b7", "referral_source": "event", "actual_net_ltv": 70406.56, "predicted_net_ltv": 127995.85}, {"account_id": "A-ccc747", "referral_source": "event", "actual_net_ltv": 12491.4, "predicted_net_ltv": 46227.94}, {"account_id": "A-bb3bd4", "referral_source": "ads", "actual_net_ltv": 31110.29, "predicted_net_ltv": 129750.08}, {"account_id": "A-09316c", "referral_source": "organic", "actual_net_ltv": 94372.39, "predicted_net_ltv": 245723.0}, {"account_id": "A-96bbc6", "referral_source": "organic", "actual_net_ltv": 80020.22, "predicted_net_ltv": 93733.9}, {"account_id": "A-bc4d48", "referral_source": "ads", "actual_net_ltv": 16782.55, "predicted_net_ltv": 109194.84}, {"account_id": "A-b30291", "referral_source": "event", "actual_net_ltv": 24686.01, "predicted_net_ltv": 72393.91}, {"account_id": "A-cdf020", "referral_source": "organic", "actual_net_ltv": 77784.15, "predicted_net_ltv": 70383.52}, {"account_id": "A-e6afc1", "referral_source": "ads", "actual_net_ltv": 240314.34, "predicted_net_ltv": 134051.05}, {"account_id": "A-e3bd71", "referral_source": "partner", "actual_net_ltv": 279920.54, "predicted_net_ltv": 207876.25}, {"account_id": "A-098560", "referral_source": "ads", "actual_net_ltv": 52700.59, "predicted_net_ltv": 66812.06}, {"account_id": "A-82861f", "referral_source": "organic", "actual_net_ltv": 138236.49, "predicted_net_ltv": 148267.1}, {"account_id": "A-94c3cd", "referral_source": "other", "actual_net_ltv": 6048.65, "predicted_net_ltv": 117520.51}, {"account_id": "A-a33200", "referral_source": "partner", "actual_net_ltv": 36180.39, "predicted_net_ltv": 128995.6}, {"account_id": "A-034368", "referral_source": "event", "actual_net_ltv": 9049.9, "predicted_net_ltv": 47364.23}, {"account_id": "A-b54c01", "referral_source": "event", "actual_net_ltv": -2615.79, "predicted_net_ltv": 65646.94}, {"account_id": "A-d82ef9", "referral_source": "other", "actual_net_ltv": 37134.66, "predicted_net_ltv": 93113.94}, {"account_id": "A-bb2f49", "referral_source": "other", "actual_net_ltv": 219045.59, "predicted_net_ltv": 92156.59}, {"account_id": "A-1f559b", "referral_source": "organic", "actual_net_ltv": 66680.16, "predicted_net_ltv": 74136.91}, {"account_id": "A-5a215a", "referral_source": "other", "actual_net_ltv": 518269.39, "predicted_net_ltv": 190933.53}, {"account_id": "A-3f9cc0", "referral_source": "event", "actual_net_ltv": 81052.35, "predicted_net_ltv": 98039.94}, {"account_id": "A-ed510f", "referral_source": "partner", "actual_net_ltv": 249438.46, "predicted_net_ltv": 123410.57}, {"account_id": "A-a7bd4b", "referral_source": "ads", "actual_net_ltv": 35022.91, "predicted_net_ltv": 66195.93}, {"account_id": "A-d4ac0e", "referral_source": "ads", "actual_net_ltv": 68909.79, "predicted_net_ltv": 77442.89}, {"account_id": "A-ffdfd5", "referral_source": "organic", "actual_net_ltv": 30908.07, "predicted_net_ltv": 66278.16}, {"account_id": "A-0dbdc6", "referral_source": "other", "actual_net_ltv": 102493.36, "predicted_net_ltv": 152700.9}, {"account_id": "A-7cfe77", "referral_source": "ads", "actual_net_ltv": 26135.48, "predicted_net_ltv": 146019.61}, {"account_id": "A-1f0636", "referral_source": "partner", "actual_net_ltv": 423413.7, "predicted_net_ltv": 178825.16}, {"account_id": "A-40de06", "referral_source": "event", "actual_net_ltv": 241065.11, "predicted_net_ltv": 121519.31}, {"account_id": "A-cb5333", "referral_source": "ads", "actual_net_ltv": 94108.57, "predicted_net_ltv": 214358.55}, {"account_id": "A-6e7827", "referral_source": "other", "actual_net_ltv": 27441.75, "predicted_net_ltv": 75961.51}, {"account_id": "A-50bb9f", "referral_source": "organic", "actual_net_ltv": 32885.77, "predicted_net_ltv": 75317.53}, {"account_id": "A-5247b3", "referral_source": "partner", "actual_net_ltv": 46425.63, "predicted_net_ltv": 49152.66}, {"account_id": "A-f44180", "referral_source": "event", "actual_net_ltv": 230513.82, "predicted_net_ltv": 78762.29}, {"account_id": "A-d42431", "referral_source": "ads", "actual_net_ltv": 51056.74, "predicted_net_ltv": 45895.49}, {"account_id": "A-0a62f5", "referral_source": "partner", "actual_net_ltv": 7986.0, "predicted_net_ltv": 62254.75}, {"account_id": "A-f5641b", "referral_source": "other", "actual_net_ltv": 93078.44, "predicted_net_ltv": 98840.86}, {"account_id": "A-b44e3e", "referral_source": "ads", "actual_net_ltv": 231198.52, "predicted_net_ltv": 185656.98}, {"account_id": "A-3b37d9", "referral_source": "event", "actual_net_ltv": 185334.44, "predicted_net_ltv": 95442.48}, {"account_id": "A-54d94a", "referral_source": "event", "actual_net_ltv": 62227.19, "predicted_net_ltv": 79352.71}, {"account_id": "A-7f29a7", "referral_source": "event", "actual_net_ltv": 14762.67, "predicted_net_ltv": 145209.84}, {"account_id": "A-089363", "referral_source": "event", "actual_net_ltv": 55108.16, "predicted_net_ltv": 63993.28}, {"account_id": "A-855a48", "referral_source": "partner", "actual_net_ltv": 176175.74, "predicted_net_ltv": 62057.8}, {"account_id": "A-756192", "referral_source": "other", "actual_net_ltv": 92390.7, "predicted_net_ltv": 81999.03}, {"account_id": "A-49b828", "referral_source": "ads", "actual_net_ltv": 279317.85, "predicted_net_ltv": 71828.78}, {"account_id": "A-c7ffc2", "referral_source": "partner", "actual_net_ltv": 305185.78, "predicted_net_ltv": 134095.55}, {"account_id": "A-751c58", "referral_source": "organic", "actual_net_ltv": 35034.18, "predicted_net_ltv": 108682.41}, {"account_id": "A-72799b", "referral_source": "event", "actual_net_ltv": 99262.22, "predicted_net_ltv": 54487.03}, {"account_id": "A-812c5b", "referral_source": "organic", "actual_net_ltv": 64428.11, "predicted_net_ltv": 184803.03}, {"account_id": "A-69b156", "referral_source": "other", "actual_net_ltv": 79931.29, "predicted_net_ltv": 78616.67}, {"account_id": "A-075038", "referral_source": "ads", "actual_net_ltv": 145659.46, "predicted_net_ltv": 54352.83}, {"account_id": "A-940b8b", "referral_source": "organic", "actual_net_ltv": 57757.33, "predicted_net_ltv": 110489.84}, {"account_id": "A-2d1036", "referral_source": "ads", "actual_net_ltv": 187392.79, "predicted_net_ltv": 269205.48}, {"account_id": "A-9affe6", "referral_source": "other", "actual_net_ltv": 85881.88, "predicted_net_ltv": 83923.72}, {"account_id": "A-80eeb6", "referral_source": "organic", "actual_net_ltv": 513667.63, "predicted_net_ltv": 103164.23}, {"account_id": "A-c7e58b", "referral_source": "other", "actual_net_ltv": 31336.95, "predicted_net_ltv": 29455.08}, {"account_id": "A-016043", "referral_source": "organic", "actual_net_ltv": 23350.93, "predicted_net_ltv": 70221.05}, {"account_id": "A-bbe56f", "referral_source": "ads", "actual_net_ltv": 61377.74, "predicted_net_ltv": 64523.84}, {"account_id": "A-7c5768", "referral_source": "event", "actual_net_ltv": 8355.89, "predicted_net_ltv": 73669.83}, {"account_id": "A-751bd4", "referral_source": "partner", "actual_net_ltv": -4358.67, "predicted_net_ltv": 38334.54}, {"account_id": "A-4e0e85", "referral_source": "organic", "actual_net_ltv": 25141.24, "predicted_net_ltv": 61611.82}, {"account_id": "A-ad3abd", "referral_source": "event", "actual_net_ltv": 199826.42, "predicted_net_ltv": 124136.61}, {"account_id": "A-e19ff6", "referral_source": "partner", "actual_net_ltv": 18328.45, "predicted_net_ltv": 71576.7}, {"account_id": "A-7920cc", "referral_source": "ads", "actual_net_ltv": 231128.52, "predicted_net_ltv": 173309.36}, {"account_id": "A-5a92e7", "referral_source": "ads", "actual_net_ltv": 25253.35, "predicted_net_ltv": 129208.31}, {"account_id": "A-fdfc91", "referral_source": "ads", "actual_net_ltv": 85047.46, "predicted_net_ltv": 117639.48}, {"account_id": "A-1e50e0", "referral_source": "other", "actual_net_ltv": 115879.69, "predicted_net_ltv": 89330.99}, {"account_id": "A-1e1b80", "referral_source": "other", "actual_net_ltv": 375104.37, "predicted_net_ltv": 141527.77}, {"account_id": "A-659280", "referral_source": "event", "actual_net_ltv": 165879.69, "predicted_net_ltv": 83495.45}, {"account_id": "A-f6b2fb", "referral_source": "event", "actual_net_ltv": 82676.39, "predicted_net_ltv": 91794.5}, {"account_id": "A-cb6cc6", "referral_source": "ads", "actual_net_ltv": 13118.45, "predicted_net_ltv": 47749.49}, {"account_id": "A-d62e02", "referral_source": "partner", "actual_net_ltv": 27902.31, "predicted_net_ltv": 70449.9}, {"account_id": "A-d535f6", "referral_source": "organic", "actual_net_ltv": 9781.06, "predicted_net_ltv": 46992.02}, {"account_id": "A-39868b", "referral_source": "partner", "actual_net_ltv": 13938.91, "predicted_net_ltv": 89889.02}, {"account_id": "A-3cc791", "referral_source": "other", "actual_net_ltv": 29734.6, "predicted_net_ltv": 79369.66}, {"account_id": "A-337bc1", "referral_source": "organic", "actual_net_ltv": 148662.37, "predicted_net_ltv": 83996.54}, {"account_id": "A-58b9ff", "referral_source": "partner", "actual_net_ltv": 50449.67, "predicted_net_ltv": 80542.87}, {"account_id": "A-1d5444", "referral_source": "partner", "actual_net_ltv": 157524.92, "predicted_net_ltv": 95910.91}, {"account_id": "A-0f3e88", "referral_source": "other", "actual_net_ltv": 37964.58, "predicted_net_ltv": 50472.83}, {"account_id": "A-7641d3", "referral_source": "partner", "actual_net_ltv": 69025.32, "predicted_net_ltv": 77159.9}, {"account_id": "A-cd458b", "referral_source": "other", "actual_net_ltv": 79312.95, "predicted_net_ltv": 98835.63}, {"account_id": "A-c16b88", "referral_source": "event", "actual_net_ltv": 55250.65, "predicted_net_ltv": 76790.74}, {"account_id": "A-59f724", "referral_source": "other", "actual_net_ltv": 64572.88, "predicted_net_ltv": 85549.52}, {"account_id": "A-87aa7b", "referral_source": "organic", "actual_net_ltv": 64570.39, "predicted_net_ltv": 143870.06}, {"account_id": "A-1e6fc3", "referral_source": "other", "actual_net_ltv": -2367.24, "predicted_net_ltv": 41864.58}, {"account_id": "A-34ea2f", "referral_source": "organic", "actual_net_ltv": 8317.47, "predicted_net_ltv": 81413.77}, {"account_id": "A-716841", "referral_source": "other", "actual_net_ltv": 47652.75, "predicted_net_ltv": 180570.03}, {"account_id": "A-558c72", "referral_source": "organic", "actual_net_ltv": 42293.11, "predicted_net_ltv": 66812.91}, {"account_id": "A-b11cd0", "referral_source": "ads", "actual_net_ltv": 32546.44, "predicted_net_ltv": 58306.63}, {"account_id": "A-7f4db3", "referral_source": "other", "actual_net_ltv": 125463.08, "predicted_net_ltv": 96713.1}, {"account_id": "A-cc102e", "referral_source": "partner", "actual_net_ltv": 18816.06, "predicted_net_ltv": 73884.71}, {"account_id": "A-dec005", "referral_source": "partner", "actual_net_ltv": 120357.0, "predicted_net_ltv": 82811.15}, {"account_id": "A-7c83a1", "referral_source": "partner", "actual_net_ltv": 63080.83, "predicted_net_ltv": 103827.74}, {"account_id": "A-297a2d", "referral_source": "event", "actual_net_ltv": 107069.57, "predicted_net_ltv": 47105.31}, {"account_id": "A-4c56c9", "referral_source": "partner", "actual_net_ltv": 54688.38, "predicted_net_ltv": 98088.16}, {"account_id": "A-cbbe12", "referral_source": "partner", "actual_net_ltv": 34775.41, "predicted_net_ltv": 97834.31}, {"account_id": "A-4a267b", "referral_source": "other", "actual_net_ltv": 84266.26, "predicted_net_ltv": 103388.45}, {"account_id": "A-bcbe98", "referral_source": "other", "actual_net_ltv": 33862.45, "predicted_net_ltv": 180567.32}, {"account_id": "A-427b69", "referral_source": "other", "actual_net_ltv": 29036.46, "predicted_net_ltv": 89941.83}, {"account_id": "A-054577", "referral_source": "ads", "actual_net_ltv": 96693.27, "predicted_net_ltv": 72402.12}, {"account_id": "A-bc87bc", "referral_source": "event", "actual_net_ltv": 3406.53, "predicted_net_ltv": 46322.43}, {"account_id": "A-e7beab", "referral_source": "organic", "actual_net_ltv": 60180.55, "predicted_net_ltv": 106336.06}, {"account_id": "A-a09355", "referral_source": "organic", "actual_net_ltv": 49172.03, "predicted_net_ltv": 64806.57}, {"account_id": "A-31ab9a", "referral_source": "organic", "actual_net_ltv": 28693.78, "predicted_net_ltv": 31179.08}, {"account_id": "A-0158bb", "referral_source": "partner", "actual_net_ltv": 4273.74, "predicted_net_ltv": 74507.51}, {"account_id": "A-f19b24", "referral_source": "organic", "actual_net_ltv": 10339.44, "predicted_net_ltv": 73444.31}, {"account_id": "A-798a3f", "referral_source": "other", "actual_net_ltv": 64057.06, "predicted_net_ltv": 81550.34}, {"account_id": "A-42b791", "referral_source": "event", "actual_net_ltv": 38460.89, "predicted_net_ltv": 73324.89}, {"account_id": "A-068fc6", "referral_source": "event", "actual_net_ltv": 114614.98, "predicted_net_ltv": 175863.66}, {"account_id": "A-6f50ae", "referral_source": "partner", "actual_net_ltv": 114612.54, "predicted_net_ltv": 90684.4}, {"account_id": "A-a2485e", "referral_source": "event", "actual_net_ltv": 18992.87, "predicted_net_ltv": 49000.31}, {"account_id": "A-bb1eaa", "referral_source": "organic", "actual_net_ltv": 30584.06, "predicted_net_ltv": 57013.05}, {"account_id": "A-cc98bc", "referral_source": "ads", "actual_net_ltv": 257815.74, "predicted_net_ltv": 178778.22}, {"account_id": "A-d77f4c", "referral_source": "partner", "actual_net_ltv": 250174.89, "predicted_net_ltv": 68014.75}, {"account_id": "A-ccabf0", "referral_source": "organic", "actual_net_ltv": 211734.3, "predicted_net_ltv": 92354.87}, {"account_id": "A-4a4c2d", "referral_source": "event", "actual_net_ltv": 304802.93, "predicted_net_ltv": 180985.37}, {"account_id": "A-b7ef83", "referral_source": "partner", "actual_net_ltv": 83370.18, "predicted_net_ltv": 86567.6}, {"account_id": "A-e08cd3", "referral_source": "ads", "actual_net_ltv": 107318.85, "predicted_net_ltv": 183413.24}, {"account_id": "A-19b2c8", "referral_source": "other", "actual_net_ltv": 199834.82, "predicted_net_ltv": 101642.51}, {"account_id": "A-970c97", "referral_source": "other", "actual_net_ltv": 70476.3, "predicted_net_ltv": 52976.1}, {"account_id": "A-6dee43", "referral_source": "other", "actual_net_ltv": 144438.31, "predicted_net_ltv": 99213.79}, {"account_id": "A-5ed98d", "referral_source": "partner", "actual_net_ltv": 47910.86, "predicted_net_ltv": 71058.59}, {"account_id": "A-c58f49", "referral_source": "other", "actual_net_ltv": 130826.41, "predicted_net_ltv": 226869.27}, {"account_id": "A-9c18c4", "referral_source": "ads", "actual_net_ltv": 115728.25, "predicted_net_ltv": 33083.94}, {"account_id": "A-cc8c8f", "referral_source": "ads", "actual_net_ltv": 35034.81, "predicted_net_ltv": 113371.99}, {"account_id": "A-5f7781", "referral_source": "other", "actual_net_ltv": 21486.69, "predicted_net_ltv": 63016.52}, {"account_id": "A-e1b9cd", "referral_source": "event", "actual_net_ltv": 312983.17, "predicted_net_ltv": 188995.68}, {"account_id": "A-ac85cd", "referral_source": "partner", "actual_net_ltv": 37562.71, "predicted_net_ltv": 235497.81}, {"account_id": "A-d792a6", "referral_source": "organic", "actual_net_ltv": 150989.16, "predicted_net_ltv": 51058.26}, {"account_id": "A-ac9111", "referral_source": "event", "actual_net_ltv": 93720.73, "predicted_net_ltv": 126092.17}, {"account_id": "A-9f0b68", "referral_source": "ads", "actual_net_ltv": 86213.48, "predicted_net_ltv": 85421.6}, {"account_id": "A-ccb686", "referral_source": "other", "actual_net_ltv": 79393.37, "predicted_net_ltv": 116205.49}, {"account_id": "A-0e966d", "referral_source": "ads", "actual_net_ltv": 31484.93, "predicted_net_ltv": 88853.19}, {"account_id": "A-b9f5b1", "referral_source": "other", "actual_net_ltv": 15733.82, "predicted_net_ltv": 36066.71}, {"account_id": "A-8ae3fc", "referral_source": "ads", "actual_net_ltv": 7315.75, "predicted_net_ltv": 59389.98}, {"account_id": "A-55f257", "referral_source": "organic", "actual_net_ltv": 68670.61, "predicted_net_ltv": 65416.82}, {"account_id": "A-712533", "referral_source": "organic", "actual_net_ltv": 77184.62, "predicted_net_ltv": 81533.42}, {"account_id": "A-781cc0", "referral_source": "organic", "actual_net_ltv": 30367.76, "predicted_net_ltv": 119657.51}], "scored_young_accounts": [{"account_id": "A-66224b", "referral_source": "other", "plan_tier": "Pro", "signup_date": "2024-10-18", "predicted_net_ltv": 207237.2}, {"account_id": "A-ce550d", "referral_source": "event", "plan_tier": "Enterprise", "signup_date": "2024-10-27", "predicted_net_ltv": 195272.7}, {"account_id": "A-18793f", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-12-18", "predicted_net_ltv": 177390.5}, {"account_id": "A-d4e0d4", "referral_source": "other", "plan_tier": "Basic", "signup_date": "2024-10-18", "predicted_net_ltv": 173310.9}, {"account_id": "A-b48f73", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-11-13", "predicted_net_ltv": 170066.82}, {"account_id": "A-0651a4", "referral_source": "organic", "plan_tier": "Pro", "signup_date": "2024-10-16", "predicted_net_ltv": 147751.73}, {"account_id": "A-e4144b", "referral_source": "other", "plan_tier": "Pro", "signup_date": "2024-10-22", "predicted_net_ltv": 137630.84}, {"account_id": "A-76fa4d", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-11-24", "predicted_net_ltv": 134668.62}, {"account_id": "A-c70870", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-10-22", "predicted_net_ltv": 133084.44}, {"account_id": "A-f9cc74", "referral_source": "partner", "plan_tier": "Enterprise", "signup_date": "2024-10-12", "predicted_net_ltv": 129492.27}, {"account_id": "A-0354fe", "referral_source": "other", "plan_tier": "Basic", "signup_date": "2024-10-22", "predicted_net_ltv": 128751.58}, {"account_id": "A-bd4513", "referral_source": "event", "plan_tier": "Enterprise", "signup_date": "2024-11-06", "predicted_net_ltv": 127984.21}, {"account_id": "A-d40bf7", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-11-08", "predicted_net_ltv": 126641.1}, {"account_id": "A-b78bf8", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-11-15", "predicted_net_ltv": 121664.4}, {"account_id": "A-c43359", "referral_source": "organic", "plan_tier": "Pro", "signup_date": "2024-11-16", "predicted_net_ltv": 120827.23}, {"account_id": "A-3a7284", "referral_source": "organic", "plan_tier": "Enterprise", "signup_date": "2024-11-17", "predicted_net_ltv": 106423.14}, {"account_id": "A-39ddf4", "referral_source": "partner", "plan_tier": "Enterprise", "signup_date": "2024-12-05", "predicted_net_ltv": 105950.96}, {"account_id": "A-039727", "referral_source": "organic", "plan_tier": "Pro", "signup_date": "2024-11-02", "predicted_net_ltv": 105195.14}, {"account_id": "A-bb1486", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-11-05", "predicted_net_ltv": 104845.99}, {"account_id": "A-671f31", "referral_source": "ads", "plan_tier": "Basic", "signup_date": "2024-11-24", "predicted_net_ltv": 104472.08}, {"account_id": "A-d3c88e", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-10-18", "predicted_net_ltv": 102273.83}, {"account_id": "A-e4bf56", "referral_source": "ads", "plan_tier": "Pro", "signup_date": "2024-10-28", "predicted_net_ltv": 101416.0}, {"account_id": "A-b179bf", "referral_source": "ads", "plan_tier": "Basic", "signup_date": "2024-10-27", "predicted_net_ltv": 101269.57}, {"account_id": "A-b07346", "referral_source": "partner", "plan_tier": "Pro", "signup_date": "2024-10-10", "predicted_net_ltv": 98581.9}, {"account_id": "A-fabe19", "referral_source": "ads", "plan_tier": "Enterprise", "signup_date": "2024-11-11", "predicted_net_ltv": 96738.68}, {"account_id": "A-118f1c", "referral_source": "other", "plan_tier": "Pro", "signup_date": "2024-10-31", "predicted_net_ltv": 94557.69}, {"account_id": "A-5fe118", "referral_source": "other", "plan_tier": "Enterprise", "signup_date": "2024-11-07", "predicted_net_ltv": 94086.63}, {"account_id": "A-1ac5e0", "referral_source": "event", "plan_tier": "Basic", "signup_date": "2024-10-20", "predicted_net_ltv": 89829.39}, {"account_id": "A-443f6f", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-12-07", "predicted_net_ltv": 88303.28}, {"account_id": "A-89ee83", "referral_source": "organic", "plan_tier": "Pro", "signup_date": "2024-10-04", "predicted_net_ltv": 87876.63}, {"account_id": "A-149a69", "referral_source": "event", "plan_tier": "Basic", "signup_date": "2024-10-17", "predicted_net_ltv": 87787.5}, {"account_id": "A-b07b56", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-11-08", "predicted_net_ltv": 87537.96}, {"account_id": "A-2922b6", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-11-14", "predicted_net_ltv": 82990.1}, {"account_id": "A-9174e0", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-12-04", "predicted_net_ltv": 82355.07}, {"account_id": "A-1b7577", "referral_source": "other", "plan_tier": "Pro", "signup_date": "2024-10-27", "predicted_net_ltv": 82116.65}, {"account_id": "A-118d55", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-10-22", "predicted_net_ltv": 80522.81}, {"account_id": "A-82d8a6", "referral_source": "ads", "plan_tier": "Basic", "signup_date": "2024-11-28", "predicted_net_ltv": 80180.19}, {"account_id": "A-524364", "referral_source": "partner", "plan_tier": "Enterprise", "signup_date": "2024-12-31", "predicted_net_ltv": 79084.24}, {"account_id": "A-139c3b", "referral_source": "organic", "plan_tier": "Enterprise", "signup_date": "2024-11-21", "predicted_net_ltv": 77246.68}, {"account_id": "A-88c6ca", "referral_source": "ads", "plan_tier": "Basic", "signup_date": "2024-10-25", "predicted_net_ltv": 77149.25}, {"account_id": "A-c16cf7", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-10-16", "predicted_net_ltv": 76896.03}, {"account_id": "A-ced9aa", "referral_source": "other", "plan_tier": "Enterprise", "signup_date": "2024-10-05", "predicted_net_ltv": 76251.17}, {"account_id": "A-2e4581", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-10-16", "predicted_net_ltv": 72214.93}, {"account_id": "A-6a7c9d", "referral_source": "organic", "plan_tier": "Enterprise", "signup_date": "2024-10-24", "predicted_net_ltv": 71577.03}, {"account_id": "A-0f7d77", "referral_source": "partner", "plan_tier": "Pro", "signup_date": "2024-10-28", "predicted_net_ltv": 71295.52}, {"account_id": "A-db5e9e", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-11-09", "predicted_net_ltv": 69626.25}, {"account_id": "A-4bfa33", "referral_source": "event", "plan_tier": "Basic", "signup_date": "2024-12-07", "predicted_net_ltv": 69511.7}, {"account_id": "A-410e86", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-11-10", "predicted_net_ltv": 64723.46}, {"account_id": "A-9f2731", "referral_source": "event", "plan_tier": "Enterprise", "signup_date": "2024-10-04", "predicted_net_ltv": 64065.36}, {"account_id": "A-fd7ad3", "referral_source": "event", "plan_tier": "Enterprise", "signup_date": "2024-11-01", "predicted_net_ltv": 58492.71}, {"account_id": "A-533452", "referral_source": "organic", "plan_tier": "Pro", "signup_date": "2024-11-12", "predicted_net_ltv": 58200.37}, {"account_id": "A-854864", "referral_source": "event", "plan_tier": "Enterprise", "signup_date": "2024-12-07", "predicted_net_ltv": 57346.09}, {"account_id": "A-6843f2", "referral_source": "ads", "plan_tier": "Enterprise", "signup_date": "2024-12-10", "predicted_net_ltv": 56880.93}, {"account_id": "A-463db0", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-12-05", "predicted_net_ltv": 55920.05}, {"account_id": "A-5c9849", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-11-03", "predicted_net_ltv": 54264.49}, {"account_id": "A-78f02b", "referral_source": "event", "plan_tier": "Enterprise", "signup_date": "2024-11-17", "predicted_net_ltv": 53860.25}, {"account_id": "A-fb186e", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-10-27", "predicted_net_ltv": 51751.13}, {"account_id": "A-0f6450", "referral_source": "other", "plan_tier": "Pro", "signup_date": "2024-12-27", "predicted_net_ltv": 50785.91}, {"account_id": "A-0be015", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-10-15", "predicted_net_ltv": 49703.77}, {"account_id": "A-5f2961", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-11-22", "predicted_net_ltv": 49116.06}, {"account_id": "A-17939a", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-12-26", "predicted_net_ltv": 48023.1}, {"account_id": "A-7c6b6b", "referral_source": "other", "plan_tier": "Basic", "signup_date": "2024-11-30", "predicted_net_ltv": 47198.14}, {"account_id": "A-700ade", "referral_source": "organic", "plan_tier": "Enterprise", "signup_date": "2024-10-31", "predicted_net_ltv": 46612.56}, {"account_id": "A-de24d5", "referral_source": "other", "plan_tier": "Enterprise", "signup_date": "2024-11-05", "predicted_net_ltv": 46175.95}, {"account_id": "A-cbd1a3", "referral_source": "other", "plan_tier": "Basic", "signup_date": "2024-11-25", "predicted_net_ltv": 45674.15}, {"account_id": "A-310452", "referral_source": "other", "plan_tier": "Enterprise", "signup_date": "2024-12-25", "predicted_net_ltv": 45260.41}, {"account_id": "A-8bde0c", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-11-04", "predicted_net_ltv": 43946.45}, {"account_id": "A-d26ab4", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-11-07", "predicted_net_ltv": 42625.07}, {"account_id": "A-0b0d6d", "referral_source": "organic", "plan_tier": "Pro", "signup_date": "2024-12-30", "predicted_net_ltv": 42141.4}, {"account_id": "A-bf7919", "referral_source": "organic", "plan_tier": "Pro", "signup_date": "2024-11-27", "predicted_net_ltv": 41422.36}, {"account_id": "A-cc1d8d", "referral_source": "other", "plan_tier": "Pro", "signup_date": "2024-12-08", "predicted_net_ltv": 41172.66}, {"account_id": "A-c37601", "referral_source": "partner", "plan_tier": "Basic", "signup_date": "2024-10-31", "predicted_net_ltv": 39751.18}, {"account_id": "A-22f2df", "referral_source": "ads", "plan_tier": "Basic", "signup_date": "2024-12-14", "predicted_net_ltv": 38135.88}, {"account_id": "A-309e54", "referral_source": "other", "plan_tier": "Pro", "signup_date": "2024-12-09", "predicted_net_ltv": 37385.02}, {"account_id": "A-956988", "referral_source": "ads", "plan_tier": "Enterprise", "signup_date": "2024-11-30", "predicted_net_ltv": 35668.95}, {"account_id": "A-5790f4", "referral_source": "event", "plan_tier": "Pro", "signup_date": "2024-12-22", "predicted_net_ltv": 35660.64}, {"account_id": "A-6965e1", "referral_source": "organic", "plan_tier": "Basic", "signup_date": "2024-11-25", "predicted_net_ltv": 32521.78}, {"account_id": "A-712426", "referral_source": "other", "plan_tier": "Enterprise", "signup_date": "2024-11-10", "predicted_net_ltv": 31771.96}]};
+const REACT_DATA = {"config": {"total_churn_events": 600, "observed_reactivations": 524, "actionable_open_population": 68, "cv_folds": 5, "assumed_gross_margin": 0.78, "overall_reactivation_rate": 0.8733}, "data_quality_note": "accounts.churn_flag was found to be statistically independent of the actual subscription/churn_event history and is NOT used anywhere in this analysis. 'Currently churned' is derived only from whether a later subscription exists after an account's most recent logged churn event.", "model_comparison": {"baseline_median_days": {"mae_days": 24.86}, "linear_regression": {"mae_days": 24.97, "r2_log_space": -0.0271, "r2_log_space_std": 0.083}, "random_forest": {"mae_days": 23.76, "r2_log_space": 0.118, "r2_log_space_std": 0.0332}}, "feature_importance": [{"feature": "tenure_days_at_churn", "importance": 0.44305058572642075}, {"feature": "ltv_to_churn", "importance": 0.16443533141877542}, {"feature": "pre_churn_ticket_count", "importance": 0.129838593890976}, {"feature": "seats", "importance": 0.07407412706590497}, {"feature": "pre_churn_avg_satisfaction", "importance": 0.02560018853069955}, {"feature": "refund_amount_usd", "importance": 0.01893015565490248}, {"feature": "churn_seq", "importance": 0.01405934540885106}, {"feature": "reason_code_pricing", "importance": 0.012804882484103719}, {"feature": "referral_source_organic", "importance": 0.01061351704928526}, {"feature": "plan_tier_Basic", "importance": 0.01036569876419036}], "reason_code_timing": [{"reason_code": "pricing", "median_days": 12.0, "mean_days": 24.1, "n": 84}, {"reason_code": "features", "median_days": 16.0, "mean_days": 28.8, "n": 100}, {"reason_code": "competitor", "median_days": 16.5, "mean_days": 31.6, "n": 82}, {"reason_code": "support", "median_days": 17.0, "mean_days": 34.3, "n": 88}, {"reason_code": "unknown", "median_days": 17.0, "mean_days": 37.4, "n": 80}, {"reason_code": "budget", "median_days": 21.0, "mean_days": 31.7, "n": 90}], "offer_map": {"pricing": {"offer": "Flexible billing / loyalty discount", "motion": "Commercial"}, "budget": {"offer": "Downgrade-to-retain / annual prepay discount", "motion": "Commercial"}, "features": {"offer": "Roadmap preview + early access to requested feature", "motion": "Product"}, "support": {"offer": "Dedicated CSM + expedited support tier for 90 days", "motion": "Service"}, "competitor": {"offer": "Competitive win-back offer (feature/price match)", "motion": "Commercial"}, "unknown": {"offer": "Discovery call to diagnose reason before offering anything", "motion": "Discovery"}}, "outreach_list": [{"account_id": "A-68f37c", "reason_code": "features", "referral_source": "ads", "plan_tier": "Basic", "ltv_to_churn": 1190102.56, "days_since_churn": 13, "predicted_days_to_reactivate": 18.78, "days_overdue": 0.0, "expected_value_usd": 928280.0, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-05f0e5", "reason_code": "features", "referral_source": "partner", "plan_tier": "Basic", "ltv_to_churn": 431853.79, "days_since_churn": 36, "predicted_days_to_reactivate": 27.06, "days_overdue": 8.94, "expected_value_usd": 336845.95, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-37f969", "reason_code": "competitor", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 416546.94, "days_since_churn": 19, "predicted_days_to_reactivate": 18.98, "days_overdue": 0.02, "expected_value_usd": 324906.62, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-2ebb4b", "reason_code": "features", "referral_source": "ads", "plan_tier": "Basic", "ltv_to_churn": 319707.03, "days_since_churn": 2, "predicted_days_to_reactivate": 29.23, "days_overdue": 0.0, "expected_value_usd": 249371.48, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-158f4e", "reason_code": "features", "referral_source": "other", "plan_tier": "Enterprise", "ltv_to_churn": 309021.47, "days_since_churn": 27, "predicted_days_to_reactivate": 24.83, "days_overdue": 2.17, "expected_value_usd": 241036.75, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-8e47ca", "reason_code": "support", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 304291.87, "days_since_churn": 0, "predicted_days_to_reactivate": 25.16, "days_overdue": 0.0, "expected_value_usd": 237347.66, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-417d2f", "reason_code": "budget", "referral_source": "partner", "plan_tier": "Pro", "ltv_to_churn": 233779.36, "days_since_churn": 1, "predicted_days_to_reactivate": 23.26, "days_overdue": 0.0, "expected_value_usd": 182347.9, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-65c341", "reason_code": "unknown", "referral_source": "ads", "plan_tier": "Pro", "ltv_to_churn": 206220.78, "days_since_churn": 15, "predicted_days_to_reactivate": 19.02, "days_overdue": 0.0, "expected_value_usd": 160852.21, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-65aeb5", "reason_code": "budget", "referral_source": "partner", "plan_tier": "Pro", "ltv_to_churn": 173836.17, "days_since_churn": 29, "predicted_days_to_reactivate": 27.39, "days_overdue": 1.61, "expected_value_usd": 135592.21, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-e1462e", "reason_code": "competitor", "referral_source": "partner", "plan_tier": "Basic", "ltv_to_churn": 173316.42, "days_since_churn": 26, "predicted_days_to_reactivate": 26.79, "days_overdue": 0.0, "expected_value_usd": 135186.8, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-157070", "reason_code": "features", "referral_source": "ads", "plan_tier": "Pro", "ltv_to_churn": 155922.1, "days_since_churn": 4, "predicted_days_to_reactivate": 20.08, "days_overdue": 0.0, "expected_value_usd": 121619.24, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-692f18", "reason_code": "support", "referral_source": "other", "plan_tier": "Basic", "ltv_to_churn": 146240.53, "days_since_churn": 8, "predicted_days_to_reactivate": 35.74, "days_overdue": 0.0, "expected_value_usd": 114067.61, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-81edc3", "reason_code": "support", "referral_source": "ads", "plan_tier": "Basic", "ltv_to_churn": 144907.55, "days_since_churn": 15, "predicted_days_to_reactivate": 14.4, "days_overdue": 0.6, "expected_value_usd": 113027.89, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-eafc6e", "reason_code": "unknown", "referral_source": "partner", "plan_tier": "Pro", "ltv_to_churn": 141019.25, "days_since_churn": 19, "predicted_days_to_reactivate": 32.09, "days_overdue": 0.0, "expected_value_usd": 109995.02, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-f51f16", "reason_code": "competitor", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 140518.66, "days_since_churn": 24, "predicted_days_to_reactivate": 20.8, "days_overdue": 3.2, "expected_value_usd": 109604.55, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-3f9cc0", "reason_code": "budget", "referral_source": "event", "plan_tier": "Basic", "ltv_to_churn": 131962.04, "days_since_churn": 10, "predicted_days_to_reactivate": 18.16, "days_overdue": 0.0, "expected_value_usd": 102930.39, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-34d880", "reason_code": "unknown", "referral_source": "ads", "plan_tier": "Enterprise", "ltv_to_churn": 129923.16, "days_since_churn": 11, "predicted_days_to_reactivate": 27.52, "days_overdue": 0.0, "expected_value_usd": 101340.07, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-922109", "reason_code": "support", "referral_source": "ads", "plan_tier": "Pro", "ltv_to_churn": 94685.91, "days_since_churn": 14, "predicted_days_to_reactivate": 22.86, "days_overdue": 0.0, "expected_value_usd": 73855.01, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-87aa7b", "reason_code": "budget", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 89745.19, "days_since_churn": 5, "predicted_days_to_reactivate": 19.46, "days_overdue": 0.0, "expected_value_usd": 70001.25, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-0baac2", "reason_code": "unknown", "referral_source": "organic", "plan_tier": "Enterprise", "ltv_to_churn": 83231.08, "days_since_churn": 7, "predicted_days_to_reactivate": 15.53, "days_overdue": 0.0, "expected_value_usd": 64920.25, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-dfbd31", "reason_code": "unknown", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 73577.2, "days_since_churn": 12, "predicted_days_to_reactivate": 14.64, "days_overdue": 0.0, "expected_value_usd": 57390.21, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, high value -- light-touch check-in, no discount needed yet"}, {"account_id": "A-e83938", "reason_code": "budget", "referral_source": "other", "plan_tier": "Pro", "ltv_to_churn": 69385.27, "days_since_churn": 2, "predicted_days_to_reactivate": 18.63, "days_overdue": 0.0, "expected_value_usd": 54120.51, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-249769", "reason_code": "budget", "referral_source": "event", "plan_tier": "Enterprise", "ltv_to_churn": 66184.31, "days_since_churn": 15, "predicted_days_to_reactivate": 28.05, "days_overdue": 0.0, "expected_value_usd": 51623.76, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-0651a4", "reason_code": "support", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 64120.52, "days_since_churn": 6, "predicted_days_to_reactivate": 11.2, "days_overdue": 0.0, "expected_value_usd": 50014.0, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-7dacce", "reason_code": "budget", "referral_source": "event", "plan_tier": "Enterprise", "ltv_to_churn": 62230.47, "days_since_churn": 4, "predicted_days_to_reactivate": 15.67, "days_overdue": 0.0, "expected_value_usd": 48539.77, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-558c72", "reason_code": "support", "referral_source": "organic", "plan_tier": "Basic", "ltv_to_churn": 58455.68, "days_since_churn": 33, "predicted_days_to_reactivate": 26.24, "days_overdue": 6.76, "expected_value_usd": 45595.43, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-7988d1", "reason_code": "unknown", "referral_source": "other", "plan_tier": "Basic", "ltv_to_churn": 49130.32, "days_since_churn": 7, "predicted_days_to_reactivate": 21.17, "days_overdue": 0.0, "expected_value_usd": 38321.65, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-781cc0", "reason_code": "budget", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 48187.81, "days_since_churn": 22, "predicted_days_to_reactivate": 17.3, "days_overdue": 4.7, "expected_value_usd": 37586.49, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-7cfe77", "reason_code": "features", "referral_source": "ads", "plan_tier": "Pro", "ltv_to_churn": 45797.91, "days_since_churn": 12, "predicted_days_to_reactivate": 17.22, "days_overdue": 0.0, "expected_value_usd": 35722.37, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-18793f", "reason_code": "support", "referral_source": "organic", "plan_tier": "Basic", "ltv_to_churn": 39294.0, "days_since_churn": 1, "predicted_days_to_reactivate": 10.58, "days_overdue": 0.0, "expected_value_usd": 30649.32, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-0a62f5", "reason_code": "support", "referral_source": "partner", "plan_tier": "Pro", "ltv_to_churn": 38295.66, "days_since_churn": 4, "predicted_days_to_reactivate": 14.01, "days_overdue": 0.0, "expected_value_usd": 29870.62, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-0a282f", "reason_code": "support", "referral_source": "organic", "plan_tier": "Basic", "ltv_to_churn": 37135.39, "days_since_churn": 0, "predicted_days_to_reactivate": 28.3, "days_overdue": 0.0, "expected_value_usd": 28965.6, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-7a0d69", "reason_code": "budget", "referral_source": "ads", "plan_tier": "Enterprise", "ltv_to_churn": 34868.8, "days_since_churn": 2, "predicted_days_to_reactivate": 19.85, "days_overdue": 0.0, "expected_value_usd": 27197.66, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-8b0451", "reason_code": "budget", "referral_source": "event", "plan_tier": "Enterprise", "ltv_to_churn": 32223.16, "days_since_churn": 2, "predicted_days_to_reactivate": 14.3, "days_overdue": 0.0, "expected_value_usd": 25134.06, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-039727", "reason_code": "pricing", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 28838.89, "days_since_churn": 9, "predicted_days_to_reactivate": 11.86, "days_overdue": 0.0, "expected_value_usd": 22494.34, "offer_type": "Flexible billing / loyalty discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-5f7781", "reason_code": "pricing", "referral_source": "other", "plan_tier": "Pro", "ltv_to_churn": 28083.97, "days_since_churn": 6, "predicted_days_to_reactivate": 23.03, "days_overdue": 0.0, "expected_value_usd": 21905.5, "offer_type": "Flexible billing / loyalty discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-956988", "reason_code": "unknown", "referral_source": "ads", "plan_tier": "Enterprise", "ltv_to_churn": 27395.35, "days_since_churn": 1, "predicted_days_to_reactivate": 11.69, "days_overdue": 0.0, "expected_value_usd": 21368.37, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-5790f4", "reason_code": "competitor", "referral_source": "event", "plan_tier": "Pro", "ltv_to_churn": 27279.5, "days_since_churn": 0, "predicted_days_to_reactivate": 5.25, "days_overdue": 0.0, "expected_value_usd": 21278.01, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-241e75", "reason_code": "features", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 24353.39, "days_since_churn": 12, "predicted_days_to_reactivate": 20.4, "days_overdue": 0.0, "expected_value_usd": 18995.64, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-8bde0c", "reason_code": "pricing", "referral_source": "organic", "plan_tier": "Basic", "ltv_to_churn": 19743.43, "days_since_churn": 1, "predicted_days_to_reactivate": 6.43, "days_overdue": 0.0, "expected_value_usd": 15399.87, "offer_type": "Flexible billing / loyalty discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-0b0d6d", "reason_code": "competitor", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 16745.5, "days_since_churn": 0, "predicted_days_to_reactivate": 4.93, "days_overdue": 0.0, "expected_value_usd": 13061.49, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-b07b56", "reason_code": "budget", "referral_source": "event", "plan_tier": "Pro", "ltv_to_churn": 11720.49, "days_since_churn": 7, "predicted_days_to_reactivate": 8.71, "days_overdue": 0.0, "expected_value_usd": 9141.98, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-db5e9e", "reason_code": "pricing", "referral_source": "partner", "plan_tier": "Basic", "ltv_to_churn": 5883.58, "days_since_churn": 2, "predicted_days_to_reactivate": 10.77, "days_overdue": 0.0, "expected_value_usd": 4589.19, "offer_type": "Flexible billing / loyalty discount", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-2922b6", "reason_code": "competitor", "referral_source": "organic", "plan_tier": "Basic", "ltv_to_churn": 5486.66, "days_since_churn": 6, "predicted_days_to_reactivate": 8.62, "days_overdue": 0.0, "expected_value_usd": 4279.6, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-4bfa33", "reason_code": "unknown", "referral_source": "event", "plan_tier": "Basic", "ltv_to_churn": 3921.21, "days_since_churn": 3, "predicted_days_to_reactivate": 4.1, "days_overdue": 0.0, "expected_value_usd": 3058.55, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-fd7ad3", "reason_code": "unknown", "referral_source": "event", "plan_tier": "Enterprise", "ltv_to_churn": 3679.82, "days_since_churn": 0, "predicted_days_to_reactivate": 6.96, "days_overdue": 0.0, "expected_value_usd": 2870.26, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-9f2731", "reason_code": "unknown", "referral_source": "event", "plan_tier": "Enterprise", "ltv_to_churn": 3652.76, "days_since_churn": 22, "predicted_days_to_reactivate": 18.61, "days_overdue": 3.39, "expected_value_usd": 2849.15, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-44dc83", "reason_code": "unknown", "referral_source": "other", "plan_tier": "Basic", "ltv_to_churn": 2471.75, "days_since_churn": 32, "predicted_days_to_reactivate": 21.41, "days_overdue": 10.59, "expected_value_usd": 1927.96, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "On track, lower value -- monitor, no action needed yet"}, {"account_id": "A-96e141", "reason_code": "budget", "referral_source": "partner", "plan_tier": "Basic", "ltv_to_churn": 69554.98, "days_since_churn": 100, "predicted_days_to_reactivate": 14.33, "days_overdue": 85.67, "expected_value_usd": 54252.89, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "Overdue but lower value -- automated/email nudge"}, {"account_id": "A-9ee962", "reason_code": "support", "referral_source": "ads", "plan_tier": "Basic", "ltv_to_churn": 68863.01, "days_since_churn": 89, "predicted_days_to_reactivate": 24.26, "days_overdue": 64.74, "expected_value_usd": 53713.15, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "Overdue but lower value -- automated/email nudge"}, {"account_id": "A-4c6f11", "reason_code": "competitor", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 60236.83, "days_since_churn": 74, "predicted_days_to_reactivate": 21.53, "days_overdue": 52.47, "expected_value_usd": 46984.72, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "Overdue but lower value -- automated/email nudge"}, {"account_id": "A-69fad4", "reason_code": "support", "referral_source": "ads", "plan_tier": "Basic", "ltv_to_churn": 50313.93, "days_since_churn": 197, "predicted_days_to_reactivate": 22.26, "days_overdue": 174.74, "expected_value_usd": 39244.86, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "Overdue but lower value -- automated/email nudge"}, {"account_id": "A-a7bd4b", "reason_code": "features", "referral_source": "ads", "plan_tier": "Enterprise", "ltv_to_churn": 41388.99, "days_since_churn": 77, "predicted_days_to_reactivate": 23.4, "days_overdue": 53.6, "expected_value_usd": 32283.42, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "Overdue but lower value -- automated/email nudge"}, {"account_id": "A-794a0b", "reason_code": "budget", "referral_source": "organic", "plan_tier": "Basic", "ltv_to_churn": 38194.81, "days_since_churn": 113, "predicted_days_to_reactivate": 29.12, "days_overdue": 83.88, "expected_value_usd": 29791.95, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "Overdue but lower value -- automated/email nudge"}, {"account_id": "A-78f02b", "reason_code": "budget", "referral_source": "event", "plan_tier": "Enterprise", "ltv_to_churn": 10769.74, "days_since_churn": 22, "predicted_days_to_reactivate": 5.01, "days_overdue": 16.99, "expected_value_usd": 8400.4, "offer_type": "Downgrade-to-retain / annual prepay discount", "offer_motion": "Commercial", "priority_tier": "Overdue but lower value -- automated/email nudge"}, {"account_id": "A-1e1b80", "reason_code": "features", "referral_source": "other", "plan_tier": "Enterprise", "ltv_to_churn": 784445.37, "days_since_churn": 48, "predicted_days_to_reactivate": 17.52, "days_overdue": 30.48, "expected_value_usd": 611867.39, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-ac14bb", "reason_code": "competitor", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 432859.49, "days_since_churn": 91, "predicted_days_to_reactivate": 23.07, "days_overdue": 67.93, "expected_value_usd": 337630.41, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-ccabf0", "reason_code": "features", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 339619.91, "days_since_churn": 61, "predicted_days_to_reactivate": 20.78, "days_overdue": 40.22, "expected_value_usd": 264903.53, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-54ecc2", "reason_code": "support", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 200542.61, "days_since_churn": 38, "predicted_days_to_reactivate": 14.88, "days_overdue": 23.12, "expected_value_usd": 156423.24, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-9208f0", "reason_code": "features", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 170308.31, "days_since_churn": 52, "predicted_days_to_reactivate": 21.65, "days_overdue": 30.35, "expected_value_usd": 132840.48, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-425e76", "reason_code": "competitor", "referral_source": "other", "plan_tier": "Enterprise", "ltv_to_churn": 156700.92, "days_since_churn": 70, "predicted_days_to_reactivate": 16.63, "days_overdue": 53.37, "expected_value_usd": 122226.72, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-dec005", "reason_code": "support", "referral_source": "partner", "plan_tier": "Pro", "ltv_to_churn": 133681.76, "days_since_churn": 38, "predicted_days_to_reactivate": 22.63, "days_overdue": 15.37, "expected_value_usd": 104271.78, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-9123ac", "reason_code": "competitor", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 121069.11, "days_since_churn": 69, "predicted_days_to_reactivate": 22.33, "days_overdue": 46.67, "expected_value_usd": 94433.91, "offer_type": "Competitive win-back offer (feature/price match)", "offer_motion": "Commercial", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-ef84cf", "reason_code": "support", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 92580.89, "days_since_churn": 41, "predicted_days_to_reactivate": 22.73, "days_overdue": 18.27, "expected_value_usd": 72213.1, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-1b9609", "reason_code": "unknown", "referral_source": "ads", "plan_tier": "Enterprise", "ltv_to_churn": 88912.45, "days_since_churn": 45, "predicted_days_to_reactivate": 17.26, "days_overdue": 27.74, "expected_value_usd": 69351.71, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-855a48", "reason_code": "unknown", "referral_source": "partner", "plan_tier": "Pro", "ltv_to_churn": 88266.19, "days_since_churn": 152, "predicted_days_to_reactivate": 26.36, "days_overdue": 125.64, "expected_value_usd": 68847.63, "offer_type": "Discovery call to diagnose reason before offering anything", "offer_motion": "Discovery", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-cdf020", "reason_code": "support", "referral_source": "organic", "plan_tier": "Pro", "ltv_to_churn": 88127.93, "days_since_churn": 54, "predicted_days_to_reactivate": 22.09, "days_overdue": 31.91, "expected_value_usd": 68739.79, "offer_type": "Dedicated CSM + expedited support tier for 90 days", "offer_motion": "Service", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}, {"account_id": "A-e61e98", "reason_code": "features", "referral_source": "partner", "plan_tier": "Enterprise", "ltv_to_churn": 72756.47, "days_since_churn": 73, "predicted_days_to_reactivate": 17.53, "days_overdue": 55.47, "expected_value_usd": 56750.05, "offer_type": "Roadmap preview + early access to requested feature", "offer_motion": "Product", "priority_tier": "Urgent: past its typical return window and high value -- call this week"}]};
+
+const CAT_COLORS = ['--s1','--s2','--s3','--s4','--s5','--s6','--s7','--s8'];
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function fmtUSD(v) {
+  if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M';
+  if (Math.abs(v) >= 1000) return '$' + Math.round(v/1000) + 'K';
+  return '$' + Math.round(v);
+}
+function fmtPct(v) { return (v*100).toFixed(1) + '%'; }
+function fmtNum(v) { return v.toLocaleString(); }
+function fmtByFormat(v, format) {
+  if (format === 'pct') return fmtPct(v);
+  if (format === 'num') return fmtNum(v);
+  return fmtUSD(v);
+}
+
+const tooltip = document.getElementById('tooltip');
+function showTooltip(evt, html) {
+  tooltip.innerHTML = html;
+  tooltip.classList.add('show');
+  moveTooltip(evt);
+}
+function moveTooltip(evt) {
+  const pad = 14;
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  if (x + 220 > window.innerWidth) x = evt.clientX - 220 - pad;
+  if (y + 60 > window.innerHeight) y = evt.clientY - 60 - pad;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+function hideTooltip() { tooltip.classList.remove('show'); }
+
+const svgNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs) {
+  const e = document.createElementNS(svgNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+/* ---------- KPI tiles ---------- */
+function renderTiles() {
+  const k = DATA.kpi;
+  const rv = DATA.reactivation_value;
+  const tiles = [
+    { label: 'Total accounts', value: fmtNum(k.total_accounts) },
+    { label: 'Active accounts', value: fmtNum(k.active_accounts) },
+    { label: 'Overall churn rate', value: fmtPct(k.overall_churn_rate) },
+    { label: 'Total realized LTV (gross)', value: fmtUSD(k.total_realized_ltv) },
+    { label: 'Total net LTV (margin-adj.)', value: fmtUSD(k.total_net_ltv), delta: fmtPct(k.net_ltv_pct_of_gross) + ' of gross' },
+    { label: 'Current ARR', value: fmtUSD(Number(k.current_total_arr)) },
+    { label: 'Active MRR from win-backs', value: fmtPct(rv.pct_of_current_mrr), delta: fmtUSD(Number(rv.current_mrr_from_winback_accounts)) + ' of active MRR' },
+  ];
+  const c = document.getElementById('tiles');
+  tiles.forEach(t => {
+    const d = document.createElement('div');
+    d.className = 'tile';
+    d.innerHTML = `<div class="label">${t.label}</div><div class="value">${t.value}</div>` + (t.delta ? `<div class="delta">${t.delta}</div>` : '');
+    c.appendChild(d);
+  });
+}
+
+/* ---------- single-measure bar chart (one hue) ---------- */
+function barChart(containerId, data, opts) {
+  const { xKey, yKey, format, color, width = 520, height = 260 } = opts;
+  const margin = { top: 14, right: 14, bottom: 34, left: 54 };
+  const w = width - margin.left - margin.right;
+  const h = height - margin.top - margin.bottom;
+  const maxY = Math.max(...data.map(d => d[yKey])) * 1.12;
+  const svg = el('svg', { width, height, viewBox: `0 0 ${width} ${height}` });
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+
+  // gridlines (4 steps)
+  const steps = 4;
+  for (let i = 0; i <= steps; i++) {
+    const yy = h - (h * i / steps);
+    const val = maxY * i / steps;
+    g.appendChild(el('line', { x1: 0, x2: w, y1: yy, y2: yy, class: 'grid-line' }));
+    const t = el('text', { x: -8, y: yy + 4, class: 'axis-label', 'text-anchor': 'end' });
+    t.textContent = fmtByFormat(val, format);
+    g.appendChild(t);
+  }
+  g.appendChild(el('line', { x1: 0, x2: w, y1: h, y2: h, class: 'baseline' }));
+
+  const bw = Math.min(24, (w / data.length) * 0.5);
+  const slot = w / data.length;
+  data.forEach((d, i) => {
+    const val = d[yKey];
+    const barH = (val / maxY) * h;
+    const x = i * slot + slot/2 - bw/2;
+    const y = h - barH;
+    const rect = el('path', {
+      d: roundedBarPath(x, y, bw, barH, 4),
+      fill: color,
+    });
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('mousemove', e => showTooltip(e, `<b>${d[xKey]}</b><br>${fmtByFormat(val, format)}`));
+    rect.addEventListener('mouseleave', hideTooltip);
+    g.appendChild(rect);
+
+    const lbl = el('text', { x: i*slot + slot/2, y: h + 18, class: 'axis-label', 'text-anchor': 'middle' });
+    lbl.textContent = d[xKey];
+    g.appendChild(lbl);
+  });
+
+  document.getElementById(containerId).appendChild(svg);
+}
+
+function roundedBarPath(x, y, w, h, r) {
+  r = Math.min(r, w/2, Math.max(h,0.01));
+  if (h <= 0) h = 0.01;
+  return `M${x},${y+h} L${x},${y+r} Q${x},${y} ${x+r},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h} Z`;
+}
+
+/* ---------- grouped bar chart (2 series) ---------- */
+function groupedBarChart(containerId, data, opts) {
+  const { xKey, series, format, width = 520, height = 280 } = opts;
+  const margin = { top: 14, right: 14, bottom: 34, left: 54 };
+  const w = width - margin.left - margin.right;
+  const h = height - margin.top - margin.bottom;
+  const maxY = Math.max(...data.flatMap(d => series.map(s => d[s.key] || 0))) * 1.12;
+  const svg = el('svg', { width, height, viewBox: `0 0 ${width} ${height}` });
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+
+  const steps = 4;
+  for (let i = 0; i <= steps; i++) {
+    const yy = h - (h * i / steps);
+    const val = maxY * i / steps;
+    g.appendChild(el('line', { x1: 0, x2: w, y1: yy, y2: yy, class: 'grid-line' }));
+    const t = el('text', { x: -8, y: yy + 4, class: 'axis-label', 'text-anchor': 'end' });
+    t.textContent = fmtByFormat(val, format);
+    g.appendChild(t);
+  }
+  g.appendChild(el('line', { x1: 0, x2: w, y1: h, y2: h, class: 'baseline' }));
+
+  const slot = w / data.length;
+  const groupW = Math.min(slot * 0.62, series.length * 22 + (series.length-1)*2);
+  const bw = Math.min(20, (groupW - (series.length-1)*2) / series.length);
+
+  data.forEach((d, i) => {
+    const groupX = i*slot + slot/2 - groupW/2;
+    series.forEach((s, si) => {
+      const val = d[s.key] || 0;
+      const barH = (val / maxY) * h;
+      const x = groupX + si*(bw+2);
+      const y = h - barH;
+      const rect = el('path', { d: roundedBarPath(x, y, bw, barH, 3), fill: cssVar(s.color) });
+      rect.style.cursor = 'pointer';
+      rect.addEventListener('mousemove', e => showTooltip(e, `<b>${d[xKey]}</b><br>${s.label}: ${fmtByFormat(val, format)}`));
+      rect.addEventListener('mouseleave', hideTooltip);
+      g.appendChild(rect);
+    });
+    const lbl = el('text', { x: i*slot + slot/2, y: h + 18, class: 'axis-label', 'text-anchor': 'middle' });
+    lbl.textContent = d[xKey];
+    g.appendChild(lbl);
+  });
+
+  document.getElementById(containerId).appendChild(svg);
+
+  // legend
+  const legend = document.createElement('div');
+  legend.className = 'legend';
+  series.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.innerHTML = `<span class="swatch" style="background:${cssVar(s.color)}"></span>${s.label}`;
+    legend.appendChild(item);
+  });
+  document.getElementById(containerId).parentElement.insertBefore(legend, document.getElementById(containerId));
+}
+
+/* ---------- multi-series line chart ---------- */
+function lineChart(containerId, seriesMap, opts) {
+  const { format, width = 1080, height = 320 } = opts;
+  const margin = { top: 14, right: 90, bottom: 34, left: 54 };
+  const w = width - margin.left - margin.right;
+  const h = height - margin.top - margin.bottom;
+  const keys = Object.keys(seriesMap);
+  const maxX = Math.max(...keys.flatMap(k => seriesMap[k].map(p => p.month)));
+  const maxY = 1.0;
+
+  const svg = el('svg', { width, height, viewBox: `0 0 ${width} ${height}` });
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+
+  const steps = 5;
+  for (let i = 0; i <= steps; i++) {
+    const yy = h - (h * i / steps);
+    const val = maxY * i / steps;
+    g.appendChild(el('line', { x1: 0, x2: w, y1: yy, y2: yy, class: 'grid-line' }));
+    const t = el('text', { x: -8, y: yy + 4, class: 'axis-label', 'text-anchor': 'end' });
+    t.textContent = fmtPct(val);
+    g.appendChild(t);
+  }
+  for (let m = 0; m <= maxX; m += 3) {
+    const xx = (m / maxX) * w;
+    const t = el('text', { x: xx, y: h + 18, class: 'axis-label', 'text-anchor': 'middle' });
+    t.textContent = 'M' + m;
+    g.appendChild(t);
+  }
+  g.appendChild(el('line', { x1: 0, x2: w, y1: h, y2: h, class: 'baseline' }));
+
+  keys.forEach((k, idx) => {
+    const pts = seriesMap[k];
+    const color = cssVar(CAT_COLORS[idx % CAT_COLORS.length]);
+    const d = pts.map((p, i) => {
+      const x = (p.month / maxX) * w;
+      const y = h - (p.retained_pct / maxY) * h;
+      return (i === 0 ? 'M' : 'L') + x + ',' + y;
+    }).join(' ');
+    g.appendChild(el('path', { d, fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+
+    pts.forEach(p => {
+      const x = (p.month / maxX) * w;
+      const y = h - (p.retained_pct / maxY) * h;
+      const dot = el('circle', { cx: x, cy: y, r: 7, fill: 'transparent' });
+      dot.style.cursor = 'pointer';
+      dot.addEventListener('mousemove', e => showTooltip(e, `<b>${k}</b> — month ${p.month}<br>${fmtPct(p.retained_pct)} retained`));
+      dot.addEventListener('mouseleave', hideTooltip);
+      g.appendChild(dot);
+    });
+  });
+
+  document.getElementById(containerId).appendChild(svg);
+
+  const legend = document.createElement('div');
+  legend.className = 'legend';
+  keys.forEach((k, idx) => {
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.innerHTML = `<span class="swatch" style="background:${cssVar(CAT_COLORS[idx % CAT_COLORS.length])}"></span>${k}`;
+    legend.appendChild(item);
+  });
+  document.getElementById(containerId).parentElement.insertBefore(legend, document.getElementById(containerId));
+}
+
+/* ---------- heatmap ---------- */
+function heatmap(containerId, matrix) {
+  const { industries, channels, values } = matrix;
+  const cell = 84, cellH = 40, labelW = 110, labelH = 24;
+  const width = labelW + channels.length * cell;
+  const height = labelH + industries.length * cellH + 10;
+  const flat = values.flat();
+  const min = Math.min(...flat), max = Math.max(...flat);
+  const blueSteps = ['#cde2fb','#9ec5f4','#6da7ec','#3987e5','#256abf','#184f95','#0d366b'];
+  function colorFor(v) {
+    const t = (v - min) / (max - min || 1);
+    const idx = Math.min(blueSteps.length - 1, Math.floor(t * blueSteps.length));
+    return blueSteps[idx];
+  }
+
+  const svg = el('svg', { width, height, viewBox: `0 0 ${width} ${height}` });
+  channels.forEach((c, ci) => {
+    const t = el('text', { x: labelW + ci*cell + cell/2, y: 14, class: 'axis-label', 'text-anchor': 'middle' });
+    t.textContent = c;
+    svg.appendChild(t);
+  });
+  industries.forEach((ind, ri) => {
+    const t = el('text', { x: labelW - 8, y: labelH + ri*cellH + cellH/2 + 4, class: 'axis-label', 'text-anchor': 'end' });
+    t.textContent = ind;
+    svg.appendChild(t);
+    channels.forEach((c, ci) => {
+      const v = values[ri][ci];
+      const x = labelW + ci*cell, y = labelH + ri*cellH;
+      const rect = el('rect', { x: x+1, y: y+1, width: cell-2, height: cellH-2, rx: 4, fill: colorFor(v) });
+      rect.style.cursor = 'pointer';
+      rect.addEventListener('mousemove', e => showTooltip(e, `<b>${ind} × ${c}</b><br>${fmtUSD(v)} avg LTV`));
+      rect.addEventListener('mouseleave', hideTooltip);
+      svg.appendChild(rect);
+      const lum = v > (min+max)/2;
+      const label = el('text', {
+        x: x + cell/2, y: y + cellH/2 + 4, 'text-anchor': 'middle',
+        fill: lum ? '#ffffff' : '#0b0b0b', 'font-size': 10.5,
+      });
+      label.textContent = fmtUSD(v);
+      svg.appendChild(label);
+    });
+  });
+  document.getElementById(containerId).appendChild(svg);
+}
+
+/* ---------- horizontal bar chart (for long category labels) ---------- */
+function hBarChart(containerId, data, opts) {
+  const { xKey, yKey, format, color, width = 520 } = opts;
+  const rowH = 28;
+  const height = data.length * rowH + 20;
+  const margin = { top: 6, right: 46, bottom: 14, left: 150 };
+  const w = width - margin.left - margin.right;
+  const h = height - margin.top - margin.bottom;
+  const maxX = Math.max(...data.map(d => d[xKey])) * 1.15;
+
+  const svg = el('svg', { width, height, viewBox: `0 0 ${width} ${height}` });
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+  g.appendChild(el('line', { x1: 0, x2: 0, y1: 0, y2: h, class: 'baseline' }));
+
+  const bh = Math.min(18, rowH * 0.6);
+  data.forEach((d, i) => {
+    const val = d[xKey];
+    const barW = (val / maxX) * w;
+    const y = i * rowH + (rowH - bh) / 2;
+    const rect = el('path', { d: roundedBarPathH(0, y, barW, bh, 4), fill: color });
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('mousemove', e => showTooltip(e, `<b>${d[yKey]}</b><br>${fmtByFormat(val, format)}`));
+    rect.addEventListener('mouseleave', hideTooltip);
+    g.appendChild(rect);
+
+    const lbl = el('text', { x: -8, y: y + bh/2 + 4, class: 'axis-label', 'text-anchor': 'end' });
+    lbl.textContent = d[yKey];
+    g.appendChild(lbl);
+
+    const val_lbl = el('text', { x: barW + 6, y: y + bh/2 + 4, class: 'bar-label' });
+    val_lbl.textContent = fmtByFormat(val, format);
+    g.appendChild(val_lbl);
+  });
+
+  document.getElementById(containerId).appendChild(svg);
+}
+function roundedBarPathH(x, y, w, h, r) {
+  r = Math.min(r, h/2, Math.max(w,0.01));
+  if (w <= 0) w = 0.01;
+  return `M${x},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h-r} Q${x+w},${y+h} ${x+w-r},${y+h} L${x},${y+h} Z`;
+}
+
+/* ---------- scatter chart (predicted vs actual) ---------- */
+function scatterChart(containerId, points, opts) {
+  const { width = 620, height = 340 } = opts;
+  const margin = { top: 14, right: 14, bottom: 34, left: 64 };
+  const w = width - margin.left - margin.right;
+  const h = height - margin.top - margin.bottom;
+  const allVals = points.flatMap(p => [p.x, p.y]);
+  const maxV = Math.max(...allVals, 0) * 1.08;
+  const minV = Math.min(0, Math.min(...allVals));
+
+  const svg = el('svg', { width, height, viewBox: `0 0 ${width} ${height}` });
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+
+  const sx = v => ((v - minV) / (maxV - minV)) * w;
+  const sy = v => h - ((v - minV) / (maxV - minV)) * h;
+
+  const steps = 4;
+  for (let i = 0; i <= steps; i++) {
+    const val = minV + (maxV - minV) * i / steps;
+    const yy = sy(val);
+    g.appendChild(el('line', { x1: 0, x2: w, y1: yy, y2: yy, class: 'grid-line' }));
+    const t = el('text', { x: -8, y: yy + 4, class: 'axis-label', 'text-anchor': 'end' });
+    t.textContent = fmtUSD(val);
+    g.appendChild(t);
+    const tx = el('text', { x: sx(val), y: h + 18, class: 'axis-label', 'text-anchor': 'middle' });
+    tx.textContent = fmtUSD(val);
+    g.appendChild(tx);
+  }
+  g.appendChild(el('line', { x1: 0, x2: w, y1: h, y2: h, class: 'baseline' }));
+  g.appendChild(el('line', { x1: 0, x2: 0, y1: 0, y2: h, class: 'baseline' }));
+
+  // y = x reference line ("perfect prediction")
+  g.appendChild(el('line', {
+    x1: sx(minV), y1: sy(minV), x2: sx(maxV), y2: sy(maxV),
+    stroke: cssVar('--text-muted'), 'stroke-width': 1, 'stroke-dasharray': '4,4',
+  }));
+
+  points.forEach(p => {
+    const dot = el('circle', { cx: sx(p.x), cy: sy(p.y), r: 4, fill: cssVar('--s1'), 'fill-opacity': 0.55 });
+    dot.style.cursor = 'pointer';
+    dot.addEventListener('mousemove', e => showTooltip(e, `<b>${p.label}</b><br>Actual: ${fmtUSD(p.x)}<br>Predicted: ${fmtUSD(p.y)}`));
+    dot.addEventListener('mouseleave', hideTooltip);
+    g.appendChild(dot);
+  });
+
+  const xlabel = el('text', { x: w/2, y: h + 32, class: 'axis-label', 'text-anchor': 'middle' });
+  xlabel.textContent = 'Actual net LTV';
+  g.appendChild(xlabel);
+  const ylabel = el('text', { x: -h/2, y: -46, class: 'axis-label', 'text-anchor': 'middle', transform: `rotate(-90)` });
+  ylabel.textContent = 'Predicted net LTV';
+  g.appendChild(ylabel);
+
+  document.getElementById(containerId).appendChild(svg);
+}
+
+/* ---------- data table ---------- */
+function dataTable(containerId, rows, columns) {
+  const table = document.createElement('table');
+  table.className = 'data-table';
+  const thead = document.createElement('thead');
+  thead.innerHTML = '<tr>' + columns.map(c =>
+    `<th style="text-align:${c.numeric === false ? 'left' : 'right'}">${c.label}</th>`).join('') + '</tr>';
+  table.appendChild(thead);
+  const tbody = document.createElement('tbody');
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = columns.map(c =>
+      `<td style="text-align:${c.numeric === false ? 'left' : 'right'}">${c.format ? c.format(r[c.key]) : r[c.key]}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  document.getElementById(containerId).appendChild(table);
+}
+
+/* ---------- build all charts ---------- */
+renderTiles();
+
+groupedBarChart('chart-channel-ltv',
+  DATA.channel.sort((a,b)=>b.avg_realized_ltv-a.avg_realized_ltv),
+  { xKey: 'channel', series: [
+      { key: 'avg_realized_ltv', label: 'Realized LTV', color: '--s1' },
+      { key: 'projected_ltv', label: 'Projected LTV (ARPA ÷ churn)', color: '--s2' },
+    ], format: 'usd', height: 260 });
+
+groupedBarChart('chart-channel-churn',
+  DATA.channel.sort((a,b)=>b.churn_rate-a.churn_rate),
+  { xKey: 'channel', series: [
+      { key: 'churn_rate', label: 'Churn rate', color: '--s6' },
+      { key: 'reactivation_rate', label: 'Reactivation rate', color: '--s2' },
+    ], format: 'pct', height: 260 });
+
+(function renderAssumptions() {
+  const a = DATA.assumptions;
+  document.getElementById('assumptions-box').innerHTML =
+    `<p><strong>How net LTV is built:</strong> ${a.note}</p>
+     <p>Assumed gross margin: <strong>${fmtPct(a.assumed_gross_margin)}</strong> &nbsp;·&nbsp;
+        Assumed support cost: <strong>$${a.assumed_support_cost_per_hour_usd}/hr</strong> of ticket resolution time &nbsp;·&nbsp;
+        Refund/credit costs use actual dollar amounts from churn_events.</p>`;
+})();
+
+groupedBarChart('chart-channel-net-ltv',
+  DATA.channel.sort((a,b)=>b.avg_realized_ltv-a.avg_realized_ltv),
+  { xKey: 'channel', series: [
+      { key: 'avg_realized_ltv', label: 'Gross realized LTV', color: '--s1' },
+      { key: 'avg_net_ltv', label: 'Net (contribution) LTV', color: '--s4' },
+    ], format: 'usd', height: 260 });
+
+const survivalMap = {};
+Object.keys(DATA.survival_by_channel).forEach(ch => { survivalMap[ch] = DATA.survival_by_channel[ch]; });
+lineChart('chart-survival', survivalMap, { format: 'pct' });
+
+barChart('chart-lifecycle',
+  DATA.lifecycle_segment.map(s => ({ segment: s.segment.replace(/_/g,' '), avg_realized_ltv: s.avg_realized_ltv })),
+  { xKey: 'segment', yKey: 'avg_realized_ltv', color: cssVar('--s5'), format: 'usd', height: 240 });
+
+barChart('chart-reactivation',
+  DATA.reactivation_by_channel.sort((a,b)=>b.reactivation_rate-a.reactivation_rate),
+  { xKey: 'channel', yKey: 'reactivation_rate', color: cssVar('--s2'), format: 'pct', height: 240 });
+
+barChart('chart-reason',
+  DATA.churn_reason.sort((a,b)=>b.events-a.events),
+  { xKey: 'reason_code', yKey: 'events', color: cssVar('--s3'), format: 'num', height: 240 });
+
+barChart('chart-reason-ltv',
+  DATA.churn_reason.sort((a,b)=>b.avg_account_ltv-a.avg_account_ltv),
+  { xKey: 'reason_code', yKey: 'avg_account_ltv', color: cssVar('--s8'), format: 'usd', height: 240 });
+
+heatmap('chart-heatmap', DATA.industry_channel_matrix);
+
+/* ---------- predictive LTV section ---------- */
+const FEATURE_LABELS = {
+  seats: 'Seats purchased',
+  initial_mrr: 'Initial deal size (MRR)',
+  early_usage_duration: 'Early usage duration',
+  early_usage_count: 'Early usage volume',
+  early_distinct_features: 'Early feature breadth',
+  early_usage_events: 'Early usage events',
+  early_error_count: 'Early error count',
+  early_ticket_count: 'Early support tickets',
+  early_beta_usage: 'Early beta feature use',
+  early_avg_satisfaction: 'Early satisfaction score',
+  early_escalation_rate: 'Early escalation rate',
+  plan_tier_Pro: 'Plan: Pro',
+  plan_tier_Basic: 'Plan: Basic',
+  plan_tier_Enterprise: 'Plan: Enterprise',
+};
+
+(function renderPredictiveSummary() {
+  const c = PRED_DATA.config;
+  const m = PRED_DATA.model_comparison;
+  const lift = 1 - (m.random_forest.mae / m.baseline_mean.mae);
+  document.getElementById('predictive-summary').innerHTML = `
+    <p>
+      Trained on <strong>${fmtNum(c.train_accounts)}</strong> accounts old enough (90+ days) to have a
+      settled outcome, evaluated with <strong>${c.cv_folds}-fold cross-validation</strong> rather than a
+      single train/test split — at this sample size a single split is noisy enough to be misleading on
+      its own. Result: R² ≈ <strong>${m.random_forest.r2.toFixed(2)}</strong> (±${m.random_forest.r2_std.toFixed(2)}) —
+      a real but modest signal, cutting prediction error by <strong>${fmtPct(lift)}</strong> versus just
+      guessing the average for every account.
+    </p>
+    <p>
+      That's an honest result, not a disappointing one: it says LTV in this dataset is driven mostly by
+      <strong>deal size at signup</strong> (seats, initial MRR) rather than early behavioral signals — a
+      real, actionable finding for prioritizing onboarding/CS attention, even though it won't predict any
+      individual account's value precisely.
+    </p>`;
+})();
+
+barChart('chart-model-mae',
+  [
+    { model: 'Baseline (guess avg)', mae: PRED_DATA.model_comparison.baseline_mean.mae },
+    { model: 'Linear regression', mae: PRED_DATA.model_comparison.linear_regression.mae },
+    { model: 'Random forest', mae: PRED_DATA.model_comparison.random_forest.mae },
+  ],
+  { xKey: 'model', yKey: 'mae', color: cssVar('--s1'), format: 'usd', height: 240 });
+
+hBarChart('chart-feature-importance',
+  PRED_DATA.feature_importance.slice(0, 8).map(f => ({
+    feature: FEATURE_LABELS[f.feature] || f.feature,
+    importance: f.importance,
+  })),
+  { xKey: 'importance', yKey: 'feature', color: cssVar('--s5'), format: 'pct' });
+
+scatterChart('chart-scatter',
+  PRED_DATA.test_predictions.map(p => ({ x: p.actual_net_ltv, y: p.predicted_net_ltv, label: `${p.account_id} (${p.referral_source})` })),
+  {});
+
+dataTable('table-young-accounts',
+  PRED_DATA.scored_young_accounts.slice(0, 15),
+  [
+    { key: 'account_id', label: 'Account', numeric: false },
+    { key: 'referral_source', label: 'Channel', numeric: false },
+    { key: 'plan_tier', label: 'Plan', numeric: false },
+    { key: 'signup_date', label: 'Signed up', numeric: false },
+    { key: 'predicted_net_ltv', label: 'Predicted net LTV', format: fmtUSD },
+  ]);
+
+/* ---------- reactivation timing & outreach section ---------- */
+const REACT_FEATURE_LABELS = {
+  tenure_days_at_churn: 'Tenure at churn (days)',
+  ltv_to_churn: 'Revenue accrued before churn',
+  pre_churn_ticket_count: 'Support tickets before churn',
+  seats: 'Seats purchased',
+  churn_seq: 'Nth churn for this account',
+  pre_churn_avg_satisfaction: 'Satisfaction score before churn',
+  refund_amount_usd: 'Refund/credit amount',
+  pre_churn_escalation_rate: 'Escalation rate before churn',
+};
+
+(function renderReactDataQuality() {
+  const c = REACT_DATA.config;
+  document.getElementById('react-data-quality').innerHTML = `
+    <p><strong>Data-quality finding:</strong> ${REACT_DATA.data_quality_note}</p>
+    <p><strong>Pivot:</strong> once reactivation is derived from real subscription data,
+       <strong>${fmtPct(c.overall_reactivation_rate)}</strong> of all ${fmtNum(c.total_churn_events)} churn events are
+       followed by a new subscription (median ~16 days) — too close to universal to predict "will they
+       reactivate" as a classification problem. The real, answerable question is <strong>how long it takes</strong>,
+       which varies meaningfully by segment — and which of the <strong>${fmtNum(c.actionable_open_population)}</strong>
+       accounts with no reactivation observed yet are running past their expected return window.</p>`;
+})();
+
+barChart('chart-reason-timing',
+  REACT_DATA.reason_code_timing.sort((a,b)=>a.median_days-b.median_days),
+  { xKey: 'reason_code', yKey: 'median_days', color: cssVar('--s1'), format: 'num', height: 240 });
+
+hBarChart('chart-react-importance',
+  REACT_DATA.feature_importance.slice(0, 8).map(f => ({
+    feature: REACT_FEATURE_LABELS[f.feature] || f.feature,
+    importance: f.importance,
+  })),
+  { xKey: 'importance', yKey: 'feature', color: cssVar('--s5'), format: 'pct' });
+
+dataTable('table-offer-map',
+  Object.entries(REACT_DATA.offer_map).map(([reason, v]) => ({ reason, offer: v.offer, motion: v.motion })),
+  [
+    { key: 'reason', label: 'Churn reason', numeric: false },
+    { key: 'offer', label: 'Offer', numeric: false },
+    { key: 'motion', label: 'Motion', numeric: false },
+  ]);
+
+dataTable('table-outreach',
+  REACT_DATA.outreach_list.slice(0, 15),
+  [
+    { key: 'account_id', label: 'Account', numeric: false },
+    { key: 'reason_code', label: 'Reason', numeric: false },
+    { key: 'days_since_churn', label: 'Days churned', format: v => Math.round(v) },
+    { key: 'predicted_days_to_reactivate', label: 'Expected days', format: v => Math.round(v) },
+    { key: 'days_overdue', label: 'Days overdue', format: v => Math.round(v) },
+    { key: 'expected_value_usd', label: 'Account value', format: fmtUSD },
+    { key: 'offer_type', label: 'Offer', numeric: false },
+    { key: 'priority_tier', label: 'Priority', numeric: false },
+  ]);
+
+window.addEventListener('mousemove', moveTooltip);
+</script>
