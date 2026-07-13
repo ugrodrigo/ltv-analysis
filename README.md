@@ -83,9 +83,10 @@ open it in a browser with no server needed. After regenerating the JSON, copy it
 ## Credits
 
 Dataset: **RavenStack: Synthetic SaaS Dataset**, created by **River @ Rivalytics**, fully
-synthetic and distributed under an MIT-like license requiring attribution. See
-[`dataset/README.md`](dataset/README.md) for the full schema and license terms. The dataset is
-used here for portfolio/educational purposes only.
+synthetic and distributed under an MIT-like license requiring attribution. Source:
+[Kaggle — SaaS Subscription and Churn Analytics Dataset](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset).
+See [`dataset/README.md`](dataset/README.md) for the full schema and license terms. The dataset
+is used here for portfolio/educational purposes only.
 
 ## License
 
