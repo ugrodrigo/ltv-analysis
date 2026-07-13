@@ -1,0 +1,3161 @@
+{
+  "config": {
+    "early_window_days": 90,
+    "train_accounts": 422,
+    "cv_folds": 5,
+    "score_accounts_too_young_to_grade": 78,
+    "assumed_gross_margin": 0.78
+  },
+  "model_comparison": {
+    "baseline_mean": {
+      "mae": 68168.16,
+      "rmse": 98467.47,
+      "r2": 0.0,
+      "r2_std": 0.0
+    },
+    "linear_regression": {
+      "mae": 60685.79,
+      "rmse": 88382.03,
+      "r2": 0.1315,
+      "r2_std": 0.1143
+    },
+    "random_forest": {
+      "mae": 60871.47,
+      "rmse": 88425.6,
+      "r2": 0.1304,
+      "r2_std": 0.11
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "seats",
+      "importance": 0.46406503116415515
+    },
+    {
+      "feature": "early_usage_duration",
+      "importance": 0.13482812682083925
+    },
+    {
+      "feature": "initial_mrr",
+      "importance": 0.12494849283336337
+    },
+    {
+      "feature": "early_usage_count",
+      "importance": 0.100138342123242
+    },
+    {
+      "feature": "early_distinct_features",
+      "importance": 0.036396949513889075
+    },
+    {
+      "feature": "early_usage_events",
+      "importance": 0.03494236930134461
+    },
+    {
+      "feature": "early_error_count",
+      "importance": 0.024796352016796572
+    },
+    {
+      "feature": "early_ticket_count",
+      "importance": 0.012209096580957875
+    },
+    {
+      "feature": "early_beta_usage",
+      "importance": 0.011812921261021748
+    },
+    {
+      "feature": "plan_tier_Pro",
+      "importance": 0.00929759269685453
+    },
+    {
+      "feature": "plan_tier_Basic",
+      "importance": 0.006157719085160738
+    },
+    {
+      "feature": "plan_tier_Enterprise",
+      "importance": 0.004842170870513816
+    }
+  ],
+  "test_predictions": [
+    {
+      "account_id": "A-43a9e3",
+      "referral_source": "other",
+      "actual_net_ltv": 90669.48,
+      "predicted_net_ltv": 47692.98
+    },
+    {
+      "account_id": "A-0a282f",
+      "referral_source": "organic",
+      "actual_net_ltv": 21133.76,
+      "predicted_net_ltv": 72198.21
+    },
+    {
+      "account_id": "A-1f0ac7",
+      "referral_source": "other",
+      "actual_net_ltv": 59775.13,
+      "predicted_net_ltv": 102196.2
+    },
+    {
+      "account_id": "A-1b9609",
+      "referral_source": "ads",
+      "actual_net_ltv": 79533.83,
+      "predicted_net_ltv": 73901.58
+    },
+    {
+      "account_id": "A-a0ca4e",
+      "referral_source": "ads",
+      "actual_net_ltv": 43640.31,
+      "predicted_net_ltv": 84244.07
+    },
+    {
+      "account_id": "A-e5d6ab",
+      "referral_source": "partner",
+      "actual_net_ltv": 89216.42,
+      "predicted_net_ltv": 68972.19
+    },
+    {
+      "account_id": "A-7dacce",
+      "referral_source": "event",
+      "actual_net_ltv": 25770.5,
+      "predicted_net_ltv": 71159.89
+    },
+    {
+      "account_id": "A-10b8da",
+      "referral_source": "partner",
+      "actual_net_ltv": 44157.93,
+      "predicted_net_ltv": 90920.35
+    },
+    {
+      "account_id": "A-592832",
+      "referral_source": "organic",
+      "actual_net_ltv": 50266.34,
+      "predicted_net_ltv": 94167.56
+    },
+    {
+      "account_id": "A-6c093d",
+      "referral_source": "partner",
+      "actual_net_ltv": 75330.43,
+      "predicted_net_ltv": 57408.75
+    },
+    {
+      "account_id": "A-462d45",
+      "referral_source": "partner",
+      "actual_net_ltv": 126209.38,
+      "predicted_net_ltv": 84118.47
+    },
+    {
+      "account_id": "A-ac14bb",
+      "referral_source": "partner",
+      "actual_net_ltv": 229451.42,
+      "predicted_net_ltv": 82994.68
+    },
+    {
+      "account_id": "A-ce66f8",
+      "referral_source": "event",
+      "actual_net_ltv": 50697.48,
+      "predicted_net_ltv": 59366.37
+    },
+    {
+      "account_id": "A-c4ea60",
+      "referral_source": "other",
+      "actual_net_ltv": 41626.39,
+      "predicted_net_ltv": 85259.57
+    },
+    {
+      "account_id": "A-832ec2",
+      "referral_source": "event",
+      "actual_net_ltv": 39327.02,
+      "predicted_net_ltv": 73345.9
+    },
+    {
+      "account_id": "A-684255",
+      "referral_source": "ads",
+      "actual_net_ltv": 38588.5,
+      "predicted_net_ltv": 66358.62
+    },
+    {
+      "account_id": "A-c42f1f",
+      "referral_source": "other",
+      "actual_net_ltv": -119.68,
+      "predicted_net_ltv": 45274.11
+    },
+    {
+      "account_id": "A-4e44e8",
+      "referral_source": "ads",
+      "actual_net_ltv": 32390.78,
+      "predicted_net_ltv": 66362.34
+    },
+    {
+      "account_id": "A-30b4ca",
+      "referral_source": "organic",
+      "actual_net_ltv": 391596.74,
+      "predicted_net_ltv": 222988.7
+    },
+    {
+      "account_id": "A-32fb14",
+      "referral_source": "event",
+      "actual_net_ltv": 28507.29,
+      "predicted_net_ltv": 103914.33
+    },
+    {
+      "account_id": "A-00cac8",
+      "referral_source": "organic",
+      "actual_net_ltv": 44552.68,
+      "predicted_net_ltv": 68212.48
+    },
+    {
+      "account_id": "A-35083d",
+      "referral_source": "partner",
+      "actual_net_ltv": 164294.15,
+      "predicted_net_ltv": 97726.88
+    },
+    {
+      "account_id": "A-eb7fac",
+      "referral_source": "organic",
+      "actual_net_ltv": 280257.71,
+      "predicted_net_ltv": 58677.91
+    },
+    {
+      "account_id": "A-b20d99",
+      "referral_source": "other",
+      "actual_net_ltv": 50476.98,
+      "predicted_net_ltv": 63409.12
+    },
+    {
+      "account_id": "A-396e5f",
+      "referral_source": "other",
+      "actual_net_ltv": 12184.99,
+      "predicted_net_ltv": 83818.49
+    },
+    {
+      "account_id": "A-45ce7a",
+      "referral_source": "ads",
+      "actual_net_ltv": 31311.24,
+      "predicted_net_ltv": 58581.88
+    },
+    {
+      "account_id": "A-08e34e",
+      "referral_source": "event",
+      "actual_net_ltv": 40633.59,
+      "predicted_net_ltv": 108247.02
+    },
+    {
+      "account_id": "A-8145a0",
+      "referral_source": "partner",
+      "actual_net_ltv": 125118.69,
+      "predicted_net_ltv": 80100.72
+    },
+    {
+      "account_id": "A-bad8c1",
+      "referral_source": "organic",
+      "actual_net_ltv": 77282.82,
+      "predicted_net_ltv": 85235.52
+    },
+    {
+      "account_id": "A-44dc83",
+      "referral_source": "other",
+      "actual_net_ltv": -7806.61,
+      "predicted_net_ltv": 90148.5
+    },
+    {
+      "account_id": "A-f446b6",
+      "referral_source": "ads",
+      "actual_net_ltv": 71105.82,
+      "predicted_net_ltv": 62831.44
+    },
+    {
+      "account_id": "A-a45270",
+      "referral_source": "ads",
+      "actual_net_ltv": 61618.45,
+      "predicted_net_ltv": 73611.8
+    },
+    {
+      "account_id": "A-05f0e5",
+      "referral_source": "partner",
+      "actual_net_ltv": 330773.32,
+      "predicted_net_ltv": 146172.15
+    },
+    {
+      "account_id": "A-9077b0",
+      "referral_source": "ads",
+      "actual_net_ltv": -1755.08,
+      "predicted_net_ltv": 76445.46
+    },
+    {
+      "account_id": "A-7f8241",
+      "referral_source": "organic",
+      "actual_net_ltv": 344034.12,
+      "predicted_net_ltv": 186598.2
+    },
+    {
+      "account_id": "A-2bc93d",
+      "referral_source": "event",
+      "actual_net_ltv": 300518.84,
+      "predicted_net_ltv": 91200.55
+    },
+    {
+      "account_id": "A-f3ff05",
+      "referral_source": "other",
+      "actual_net_ltv": 39192.88,
+      "predicted_net_ltv": 77803.08
+    },
+    {
+      "account_id": "A-2d4502",
+      "referral_source": "event",
+      "actual_net_ltv": 69961.77,
+      "predicted_net_ltv": 44255.19
+    },
+    {
+      "account_id": "A-6a4e2d",
+      "referral_source": "partner",
+      "actual_net_ltv": 115009.23,
+      "predicted_net_ltv": 67936.82
+    },
+    {
+      "account_id": "A-eb7c38",
+      "referral_source": "organic",
+      "actual_net_ltv": 130328.5,
+      "predicted_net_ltv": 74660.07
+    },
+    {
+      "account_id": "A-3b5cd1",
+      "referral_source": "event",
+      "actual_net_ltv": 99955.31,
+      "predicted_net_ltv": 75647.93
+    },
+    {
+      "account_id": "A-b2225d",
+      "referral_source": "ads",
+      "actual_net_ltv": 80931.68,
+      "predicted_net_ltv": 176179.99
+    },
+    {
+      "account_id": "A-94f8c9",
+      "referral_source": "other",
+      "actual_net_ltv": 70107.47,
+      "predicted_net_ltv": 82873.95
+    },
+    {
+      "account_id": "A-02fac6",
+      "referral_source": "event",
+      "actual_net_ltv": 140272.81,
+      "predicted_net_ltv": 91094.35
+    },
+    {
+      "account_id": "A-c1dfe1",
+      "referral_source": "ads",
+      "actual_net_ltv": 136973.78,
+      "predicted_net_ltv": 94697.85
+    },
+    {
+      "account_id": "A-32728c",
+      "referral_source": "event",
+      "actual_net_ltv": 49672.14,
+      "predicted_net_ltv": 103885.01
+    },
+    {
+      "account_id": "A-4c38bc",
+      "referral_source": "event",
+      "actual_net_ltv": 173042.77,
+      "predicted_net_ltv": 167648.78
+    },
+    {
+      "account_id": "A-1b707d",
+      "referral_source": "organic",
+      "actual_net_ltv": 65682.54,
+      "predicted_net_ltv": 32274.33
+    },
+    {
+      "account_id": "A-6f8ad2",
+      "referral_source": "organic",
+      "actual_net_ltv": 68808.72,
+      "predicted_net_ltv": 98056.71
+    },
+    {
+      "account_id": "A-4d1e75",
+      "referral_source": "other",
+      "actual_net_ltv": 67726.9,
+      "predicted_net_ltv": 76951.34
+    },
+    {
+      "account_id": "A-9ee962",
+      "referral_source": "ads",
+      "actual_net_ltv": 70920.97,
+      "predicted_net_ltv": 44379.7
+    },
+    {
+      "account_id": "A-378b99",
+      "referral_source": "ads",
+      "actual_net_ltv": 13273.8,
+      "predicted_net_ltv": 80262.34
+    },
+    {
+      "account_id": "A-94d3da",
+      "referral_source": "other",
+      "actual_net_ltv": 187678.01,
+      "predicted_net_ltv": 186850.97
+    },
+    {
+      "account_id": "A-e351e1",
+      "referral_source": "other",
+      "actual_net_ltv": 4509.55,
+      "predicted_net_ltv": 143846.25
+    },
+    {
+      "account_id": "A-9badbd",
+      "referral_source": "ads",
+      "actual_net_ltv": 61620.12,
+      "predicted_net_ltv": 108507.82
+    },
+    {
+      "account_id": "A-7e0a10",
+      "referral_source": "ads",
+      "actual_net_ltv": 214989.34,
+      "predicted_net_ltv": 132391.64
+    },
+    {
+      "account_id": "A-526d93",
+      "referral_source": "organic",
+      "actual_net_ltv": 148578.58,
+      "predicted_net_ltv": 149989.54
+    },
+    {
+      "account_id": "A-f92792",
+      "referral_source": "ads",
+      "actual_net_ltv": 50095.3,
+      "predicted_net_ltv": 62569.08
+    },
+    {
+      "account_id": "A-84ebe4",
+      "referral_source": "ads",
+      "actual_net_ltv": 174997.59,
+      "predicted_net_ltv": 57456.85
+    },
+    {
+      "account_id": "A-5b4ebb",
+      "referral_source": "other",
+      "actual_net_ltv": 36807.2,
+      "predicted_net_ltv": 99023.48
+    },
+    {
+      "account_id": "A-9b9fe9",
+      "referral_source": "other",
+      "actual_net_ltv": 43092.31,
+      "predicted_net_ltv": 67664.16
+    },
+    {
+      "account_id": "A-a8b49c",
+      "referral_source": "partner",
+      "actual_net_ltv": 47614.65,
+      "predicted_net_ltv": 75074.89
+    },
+    {
+      "account_id": "A-a1bbb6",
+      "referral_source": "organic",
+      "actual_net_ltv": 195389.37,
+      "predicted_net_ltv": 83815.5
+    },
+    {
+      "account_id": "A-c45b23",
+      "referral_source": "partner",
+      "actual_net_ltv": 17193.74,
+      "predicted_net_ltv": 69621.75
+    },
+    {
+      "account_id": "A-02cd81",
+      "referral_source": "other",
+      "actual_net_ltv": 158587.42,
+      "predicted_net_ltv": 152684.45
+    },
+    {
+      "account_id": "A-ee42db",
+      "referral_source": "ads",
+      "actual_net_ltv": 66229.8,
+      "predicted_net_ltv": 75244.27
+    },
+    {
+      "account_id": "A-432483",
+      "referral_source": "ads",
+      "actual_net_ltv": 227598.86,
+      "predicted_net_ltv": 58050.75
+    },
+    {
+      "account_id": "A-9208f0",
+      "referral_source": "organic",
+      "actual_net_ltv": 38930.32,
+      "predicted_net_ltv": 53789.84
+    },
+    {
+      "account_id": "A-98a59a",
+      "referral_source": "partner",
+      "actual_net_ltv": 189325.26,
+      "predicted_net_ltv": 136992.05
+    },
+    {
+      "account_id": "A-fe79a5",
+      "referral_source": "ads",
+      "actual_net_ltv": 33305.53,
+      "predicted_net_ltv": 42120.99
+    },
+    {
+      "account_id": "A-726cfa",
+      "referral_source": "partner",
+      "actual_net_ltv": 191950.37,
+      "predicted_net_ltv": 97989.1
+    },
+    {
+      "account_id": "A-271f46",
+      "referral_source": "event",
+      "actual_net_ltv": 81948.06,
+      "predicted_net_ltv": 83248.1
+    },
+    {
+      "account_id": "A-157070",
+      "referral_source": "ads",
+      "actual_net_ltv": 119262.74,
+      "predicted_net_ltv": 74655.98
+    },
+    {
+      "account_id": "A-40a557",
+      "referral_source": "partner",
+      "actual_net_ltv": 108975.65,
+      "predicted_net_ltv": 87723.49
+    },
+    {
+      "account_id": "A-91e948",
+      "referral_source": "partner",
+      "actual_net_ltv": 108013.4,
+      "predicted_net_ltv": 153182.01
+    },
+    {
+      "account_id": "A-104f1a",
+      "referral_source": "other",
+      "actual_net_ltv": 17812.21,
+      "predicted_net_ltv": 77836.27
+    },
+    {
+      "account_id": "A-7988d1",
+      "referral_source": "other",
+      "actual_net_ltv": 35066.6,
+      "predicted_net_ltv": 116462.09
+    },
+    {
+      "account_id": "A-faa28c",
+      "referral_source": "organic",
+      "actual_net_ltv": 230008.62,
+      "predicted_net_ltv": 204869.44
+    },
+    {
+      "account_id": "A-f25509",
+      "referral_source": "other",
+      "actual_net_ltv": 59922.13,
+      "predicted_net_ltv": 118038.23
+    },
+    {
+      "account_id": "A-3a5ad8",
+      "referral_source": "organic",
+      "actual_net_ltv": 99979.99,
+      "predicted_net_ltv": 66525.19
+    },
+    {
+      "account_id": "A-65a46c",
+      "referral_source": "event",
+      "actual_net_ltv": 142320.16,
+      "predicted_net_ltv": 92813.52
+    },
+    {
+      "account_id": "A-8b25f2",
+      "referral_source": "ads",
+      "actual_net_ltv": 34890.75,
+      "predicted_net_ltv": 78663.25
+    },
+    {
+      "account_id": "A-adc1f3",
+      "referral_source": "organic",
+      "actual_net_ltv": 20599.1,
+      "predicted_net_ltv": 53527.77
+    },
+    {
+      "account_id": "A-503d5a",
+      "referral_source": "other",
+      "actual_net_ltv": 46635.97,
+      "predicted_net_ltv": 82614.25
+    },
+    {
+      "account_id": "A-186a44",
+      "referral_source": "ads",
+      "actual_net_ltv": 42501.73,
+      "predicted_net_ltv": 119679.79
+    },
+    {
+      "account_id": "A-e888d1",
+      "referral_source": "other",
+      "actual_net_ltv": 82097.01,
+      "predicted_net_ltv": 82099.23
+    },
+    {
+      "account_id": "A-69fad4",
+      "referral_source": "ads",
+      "actual_net_ltv": 58858.78,
+      "predicted_net_ltv": 78013.31
+    },
+    {
+      "account_id": "A-9289f6",
+      "referral_source": "event",
+      "actual_net_ltv": 64388.23,
+      "predicted_net_ltv": 65667.66
+    },
+    {
+      "account_id": "A-f19409",
+      "referral_source": "other",
+      "actual_net_ltv": 208531.47,
+      "predicted_net_ltv": 98337.24
+    },
+    {
+      "account_id": "A-2e3bad",
+      "referral_source": "other",
+      "actual_net_ltv": 280855.63,
+      "predicted_net_ltv": 226235.78
+    },
+    {
+      "account_id": "A-484819",
+      "referral_source": "organic",
+      "actual_net_ltv": 163794.39,
+      "predicted_net_ltv": 124444.36
+    },
+    {
+      "account_id": "A-425e76",
+      "referral_source": "other",
+      "actual_net_ltv": 96002.36,
+      "predicted_net_ltv": 81255.62
+    },
+    {
+      "account_id": "A-e83938",
+      "referral_source": "other",
+      "actual_net_ltv": 32445.13,
+      "predicted_net_ltv": 81109.58
+    },
+    {
+      "account_id": "A-ad296b",
+      "referral_source": "event",
+      "actual_net_ltv": 49546.59,
+      "predicted_net_ltv": 97289.89
+    },
+    {
+      "account_id": "A-e51ec7",
+      "referral_source": "partner",
+      "actual_net_ltv": 86011.66,
+      "predicted_net_ltv": 106993.45
+    },
+    {
+      "account_id": "A-0aaf6e",
+      "referral_source": "organic",
+      "actual_net_ltv": 11726.83,
+      "predicted_net_ltv": 79855.07
+    },
+    {
+      "account_id": "A-e61e98",
+      "referral_source": "partner",
+      "actual_net_ltv": 75602.75,
+      "predicted_net_ltv": 79908.73
+    },
+    {
+      "account_id": "A-92a333",
+      "referral_source": "event",
+      "actual_net_ltv": 109515.65,
+      "predicted_net_ltv": 68083.99
+    },
+    {
+      "account_id": "A-95b24a",
+      "referral_source": "event",
+      "actual_net_ltv": 254303.44,
+      "predicted_net_ltv": 180402.22
+    },
+    {
+      "account_id": "A-42e5e1",
+      "referral_source": "ads",
+      "actual_net_ltv": 7488.09,
+      "predicted_net_ltv": 80469.02
+    },
+    {
+      "account_id": "A-7d514c",
+      "referral_source": "organic",
+      "actual_net_ltv": 93716.37,
+      "predicted_net_ltv": 78548.56
+    },
+    {
+      "account_id": "A-65aeb5",
+      "referral_source": "partner",
+      "actual_net_ltv": 147615.81,
+      "predicted_net_ltv": 95644.1
+    },
+    {
+      "account_id": "A-e2cd1b",
+      "referral_source": "other",
+      "actual_net_ltv": 33243.27,
+      "predicted_net_ltv": 100678.81
+    },
+    {
+      "account_id": "A-180abf",
+      "referral_source": "event",
+      "actual_net_ltv": 132234.32,
+      "predicted_net_ltv": 213601.42
+    },
+    {
+      "account_id": "A-f17767",
+      "referral_source": "event",
+      "actual_net_ltv": 146711.83,
+      "predicted_net_ltv": 81430.77
+    },
+    {
+      "account_id": "A-5a184f",
+      "referral_source": "other",
+      "actual_net_ltv": 184447.6,
+      "predicted_net_ltv": 44165.48
+    },
+    {
+      "account_id": "A-7df7a7",
+      "referral_source": "organic",
+      "actual_net_ltv": 225629.48,
+      "predicted_net_ltv": 69251.54
+    },
+    {
+      "account_id": "A-52dd88",
+      "referral_source": "ads",
+      "actual_net_ltv": 87806.56,
+      "predicted_net_ltv": 102729.1
+    },
+    {
+      "account_id": "A-bece89",
+      "referral_source": "event",
+      "actual_net_ltv": 130278.91,
+      "predicted_net_ltv": 56508.34
+    },
+    {
+      "account_id": "A-029f69",
+      "referral_source": "event",
+      "actual_net_ltv": 48541.14,
+      "predicted_net_ltv": 69871.95
+    },
+    {
+      "account_id": "A-5c046d",
+      "referral_source": "partner",
+      "actual_net_ltv": 114075.65,
+      "predicted_net_ltv": 146199.8
+    },
+    {
+      "account_id": "A-ae052e",
+      "referral_source": "other",
+      "actual_net_ltv": 18082.14,
+      "predicted_net_ltv": 144452.99
+    },
+    {
+      "account_id": "A-9f9299",
+      "referral_source": "organic",
+      "actual_net_ltv": 203677.21,
+      "predicted_net_ltv": 158829.89
+    },
+    {
+      "account_id": "A-96e141",
+      "referral_source": "partner",
+      "actual_net_ltv": 69289.46,
+      "predicted_net_ltv": 35100.68
+    },
+    {
+      "account_id": "A-117171",
+      "referral_source": "organic",
+      "actual_net_ltv": 15679.33,
+      "predicted_net_ltv": 148121.56
+    },
+    {
+      "account_id": "A-313be3",
+      "referral_source": "partner",
+      "actual_net_ltv": 118098.11,
+      "predicted_net_ltv": 93998.28
+    },
+    {
+      "account_id": "A-bbc346",
+      "referral_source": "partner",
+      "actual_net_ltv": 53829.95,
+      "predicted_net_ltv": 88007.22
+    },
+    {
+      "account_id": "A-c16101",
+      "referral_source": "other",
+      "actual_net_ltv": 17544.87,
+      "predicted_net_ltv": 84059.21
+    },
+    {
+      "account_id": "A-50f3f7",
+      "referral_source": "partner",
+      "actual_net_ltv": 149092.27,
+      "predicted_net_ltv": 200617.6
+    },
+    {
+      "account_id": "A-7da956",
+      "referral_source": "event",
+      "actual_net_ltv": 18723.59,
+      "predicted_net_ltv": 83415.52
+    },
+    {
+      "account_id": "A-019782",
+      "referral_source": "event",
+      "actual_net_ltv": 68454.3,
+      "predicted_net_ltv": 79334.48
+    },
+    {
+      "account_id": "A-df10db",
+      "referral_source": "other",
+      "actual_net_ltv": 57612.89,
+      "predicted_net_ltv": 69993.18
+    },
+    {
+      "account_id": "A-3932db",
+      "referral_source": "other",
+      "actual_net_ltv": 23016.18,
+      "predicted_net_ltv": 81376.33
+    },
+    {
+      "account_id": "A-4f18f0",
+      "referral_source": "other",
+      "actual_net_ltv": 89811.55,
+      "predicted_net_ltv": 88264.88
+    },
+    {
+      "account_id": "A-4c6f11",
+      "referral_source": "organic",
+      "actual_net_ltv": 43654.63,
+      "predicted_net_ltv": 68753.39
+    },
+    {
+      "account_id": "A-8ae05d",
+      "referral_source": "other",
+      "actual_net_ltv": 37020.76,
+      "predicted_net_ltv": 226747.56
+    },
+    {
+      "account_id": "A-eafc6e",
+      "referral_source": "partner",
+      "actual_net_ltv": 115656.26,
+      "predicted_net_ltv": 56235.5
+    },
+    {
+      "account_id": "A-37f969",
+      "referral_source": "partner",
+      "actual_net_ltv": 147807.93,
+      "predicted_net_ltv": 104119.5
+    },
+    {
+      "account_id": "A-10b8f2",
+      "referral_source": "organic",
+      "actual_net_ltv": 263694.93,
+      "predicted_net_ltv": 134191.59
+    },
+    {
+      "account_id": "A-439b2f",
+      "referral_source": "ads",
+      "actual_net_ltv": 1684.74,
+      "predicted_net_ltv": 42471.03
+    },
+    {
+      "account_id": "A-544d0a",
+      "referral_source": "organic",
+      "actual_net_ltv": 52809.55,
+      "predicted_net_ltv": 56072.68
+    },
+    {
+      "account_id": "A-ba6516",
+      "referral_source": "ads",
+      "actual_net_ltv": 139288.3,
+      "predicted_net_ltv": 124298.64
+    },
+    {
+      "account_id": "A-038089",
+      "referral_source": "other",
+      "actual_net_ltv": 2134.05,
+      "predicted_net_ltv": 35329.5
+    },
+    {
+      "account_id": "A-afa505",
+      "referral_source": "partner",
+      "actual_net_ltv": 276089.8,
+      "predicted_net_ltv": 210623.58
+    },
+    {
+      "account_id": "A-d5a319",
+      "referral_source": "other",
+      "actual_net_ltv": 194402.03,
+      "predicted_net_ltv": 80697.97
+    },
+    {
+      "account_id": "A-f97b9a",
+      "referral_source": "event",
+      "actual_net_ltv": 125226.23,
+      "predicted_net_ltv": 84131.61
+    },
+    {
+      "account_id": "A-2f6a32",
+      "referral_source": "organic",
+      "actual_net_ltv": 6891.17,
+      "predicted_net_ltv": 79461.03
+    },
+    {
+      "account_id": "A-856b1e",
+      "referral_source": "partner",
+      "actual_net_ltv": 53100.46,
+      "predicted_net_ltv": 55244.78
+    },
+    {
+      "account_id": "A-d27f50",
+      "referral_source": "ads",
+      "actual_net_ltv": 59535.16,
+      "predicted_net_ltv": 146977.71
+    },
+    {
+      "account_id": "A-e36807",
+      "referral_source": "other",
+      "actual_net_ltv": 25068.0,
+      "predicted_net_ltv": 87666.74
+    },
+    {
+      "account_id": "A-ff79f2",
+      "referral_source": "ads",
+      "actual_net_ltv": 46851.76,
+      "predicted_net_ltv": 74586.46
+    },
+    {
+      "account_id": "A-5b1bcd",
+      "referral_source": "organic",
+      "actual_net_ltv": 959428.55,
+      "predicted_net_ltv": 185345.51
+    },
+    {
+      "account_id": "A-71615e",
+      "referral_source": "organic",
+      "actual_net_ltv": 112055.64,
+      "predicted_net_ltv": 94578.79
+    },
+    {
+      "account_id": "A-794a0b",
+      "referral_source": "organic",
+      "actual_net_ltv": 60412.2,
+      "predicted_net_ltv": 63274.44
+    },
+    {
+      "account_id": "A-86902e",
+      "referral_source": "other",
+      "actual_net_ltv": 208410.33,
+      "predicted_net_ltv": 84056.05
+    },
+    {
+      "account_id": "A-0532a9",
+      "referral_source": "event",
+      "actual_net_ltv": 11844.03,
+      "predicted_net_ltv": 88779.76
+    },
+    {
+      "account_id": "A-9779ad",
+      "referral_source": "event",
+      "actual_net_ltv": 200431.96,
+      "predicted_net_ltv": 181511.38
+    },
+    {
+      "account_id": "A-f45426",
+      "referral_source": "organic",
+      "actual_net_ltv": 18131.19,
+      "predicted_net_ltv": 81100.41
+    },
+    {
+      "account_id": "A-c1e51e",
+      "referral_source": "organic",
+      "actual_net_ltv": 13296.55,
+      "predicted_net_ltv": 66334.77
+    },
+    {
+      "account_id": "A-fa3095",
+      "referral_source": "ads",
+      "actual_net_ltv": 454200.91,
+      "predicted_net_ltv": 180819.72
+    },
+    {
+      "account_id": "A-ad64c6",
+      "referral_source": "event",
+      "actual_net_ltv": 50827.13,
+      "predicted_net_ltv": 51971.57
+    },
+    {
+      "account_id": "A-39b19f",
+      "referral_source": "partner",
+      "actual_net_ltv": 115571.87,
+      "predicted_net_ltv": 72554.86
+    },
+    {
+      "account_id": "A-56962b",
+      "referral_source": "partner",
+      "actual_net_ltv": 70958.93,
+      "predicted_net_ltv": 133467.04
+    },
+    {
+      "account_id": "A-e60f9d",
+      "referral_source": "other",
+      "actual_net_ltv": 64581.72,
+      "predicted_net_ltv": 90224.22
+    },
+    {
+      "account_id": "A-158f4e",
+      "referral_source": "other",
+      "actual_net_ltv": 264436.22,
+      "predicted_net_ltv": 191248.8
+    },
+    {
+      "account_id": "A-5b051a",
+      "referral_source": "event",
+      "actual_net_ltv": 2556.87,
+      "predicted_net_ltv": 58437.04
+    },
+    {
+      "account_id": "A-296d7c",
+      "referral_source": "other",
+      "actual_net_ltv": -1721.39,
+      "predicted_net_ltv": 73010.86
+    },
+    {
+      "account_id": "A-1619f8",
+      "referral_source": "organic",
+      "actual_net_ltv": 66547.12,
+      "predicted_net_ltv": 154079.03
+    },
+    {
+      "account_id": "A-a1b80b",
+      "referral_source": "organic",
+      "actual_net_ltv": 182838.99,
+      "predicted_net_ltv": 138352.59
+    },
+    {
+      "account_id": "A-702032",
+      "referral_source": "ads",
+      "actual_net_ltv": 34330.42,
+      "predicted_net_ltv": 88095.66
+    },
+    {
+      "account_id": "A-7a0d69",
+      "referral_source": "ads",
+      "actual_net_ltv": 15043.73,
+      "predicted_net_ltv": 75956.72
+    },
+    {
+      "account_id": "A-22d9d2",
+      "referral_source": "event",
+      "actual_net_ltv": 50084.32,
+      "predicted_net_ltv": 114541.07
+    },
+    {
+      "account_id": "A-b9eed8",
+      "referral_source": "organic",
+      "actual_net_ltv": 48770.32,
+      "predicted_net_ltv": 104413.88
+    },
+    {
+      "account_id": "A-dfbd31",
+      "referral_source": "partner",
+      "actual_net_ltv": 58826.51,
+      "predicted_net_ltv": 80412.55
+    },
+    {
+      "account_id": "A-8e47ca",
+      "referral_source": "organic",
+      "actual_net_ltv": 136054.19,
+      "predicted_net_ltv": 86101.14
+    },
+    {
+      "account_id": "A-4437e4",
+      "referral_source": "event",
+      "actual_net_ltv": 80128.39,
+      "predicted_net_ltv": 72334.69
+    },
+    {
+      "account_id": "A-779e4e",
+      "referral_source": "organic",
+      "actual_net_ltv": 322848.76,
+      "predicted_net_ltv": 71320.13
+    },
+    {
+      "account_id": "A-53f4e3",
+      "referral_source": "event",
+      "actual_net_ltv": 20235.19,
+      "predicted_net_ltv": 78473.11
+    },
+    {
+      "account_id": "A-692f18",
+      "referral_source": "other",
+      "actual_net_ltv": 116245.77,
+      "predicted_net_ltv": 101090.47
+    },
+    {
+      "account_id": "A-13466a",
+      "referral_source": "event",
+      "actual_net_ltv": 67004.71,
+      "predicted_net_ltv": 32664.09
+    },
+    {
+      "account_id": "A-1986ca",
+      "referral_source": "ads",
+      "actual_net_ltv": 158385.93,
+      "predicted_net_ltv": 112633.68
+    },
+    {
+      "account_id": "A-0cc442",
+      "referral_source": "organic",
+      "actual_net_ltv": 123181.9,
+      "predicted_net_ltv": 164609.84
+    },
+    {
+      "account_id": "A-c608c8",
+      "referral_source": "ads",
+      "actual_net_ltv": 56114.11,
+      "predicted_net_ltv": 59576.64
+    },
+    {
+      "account_id": "A-3be56b",
+      "referral_source": "event",
+      "actual_net_ltv": 80147.93,
+      "predicted_net_ltv": 66454.44
+    },
+    {
+      "account_id": "A-354f12",
+      "referral_source": "ads",
+      "actual_net_ltv": 38018.76,
+      "predicted_net_ltv": 78452.5
+    },
+    {
+      "account_id": "A-68f37c",
+      "referral_source": "ads",
+      "actual_net_ltv": 376550.11,
+      "predicted_net_ltv": 107902.1
+    },
+    {
+      "account_id": "A-aa9511",
+      "referral_source": "other",
+      "actual_net_ltv": 354218.59,
+      "predicted_net_ltv": 93082.19
+    },
+    {
+      "account_id": "A-af0cd2",
+      "referral_source": "other",
+      "actual_net_ltv": 64098.95,
+      "predicted_net_ltv": 113980.74
+    },
+    {
+      "account_id": "A-c222ab",
+      "referral_source": "other",
+      "actual_net_ltv": 27048.34,
+      "predicted_net_ltv": 137812.84
+    },
+    {
+      "account_id": "A-34d880",
+      "referral_source": "ads",
+      "actual_net_ltv": 97884.13,
+      "predicted_net_ltv": 109335.52
+    },
+    {
+      "account_id": "A-508199",
+      "referral_source": "event",
+      "actual_net_ltv": 58570.07,
+      "predicted_net_ltv": 58957.18
+    },
+    {
+      "account_id": "A-f03140",
+      "referral_source": "event",
+      "actual_net_ltv": 96417.53,
+      "predicted_net_ltv": 123534.46
+    },
+    {
+      "account_id": "A-fa2041",
+      "referral_source": "organic",
+      "actual_net_ltv": 63118.39,
+      "predicted_net_ltv": 82684.36
+    },
+    {
+      "account_id": "A-de58ca",
+      "referral_source": "organic",
+      "actual_net_ltv": 195337.9,
+      "predicted_net_ltv": 82116.9
+    },
+    {
+      "account_id": "A-05d3b3",
+      "referral_source": "ads",
+      "actual_net_ltv": 90435.0,
+      "predicted_net_ltv": 60781.37
+    },
+    {
+      "account_id": "A-249769",
+      "referral_source": "event",
+      "actual_net_ltv": 54578.43,
+      "predicted_net_ltv": 73644.44
+    },
+    {
+      "account_id": "A-e43bf7",
+      "referral_source": "other",
+      "actual_net_ltv": 408208.35,
+      "predicted_net_ltv": 170050.02
+    },
+    {
+      "account_id": "A-eb2fdc",
+      "referral_source": "organic",
+      "actual_net_ltv": 125860.43,
+      "predicted_net_ltv": 168318.03
+    },
+    {
+      "account_id": "A-e1462e",
+      "referral_source": "partner",
+      "actual_net_ltv": 124966.25,
+      "predicted_net_ltv": 87784.13
+    },
+    {
+      "account_id": "A-cab532",
+      "referral_source": "organic",
+      "actual_net_ltv": 178547.88,
+      "predicted_net_ltv": 108338.68
+    },
+    {
+      "account_id": "A-9123ac",
+      "referral_source": "organic",
+      "actual_net_ltv": 87586.57,
+      "predicted_net_ltv": 72820.08
+    },
+    {
+      "account_id": "A-6e08f3",
+      "referral_source": "event",
+      "actual_net_ltv": 85897.57,
+      "predicted_net_ltv": 58666.28
+    },
+    {
+      "account_id": "A-d922bf",
+      "referral_source": "ads",
+      "actual_net_ltv": 127062.84,
+      "predicted_net_ltv": 100023.1
+    },
+    {
+      "account_id": "A-8ed5dd",
+      "referral_source": "event",
+      "actual_net_ltv": 89261.72,
+      "predicted_net_ltv": 78599.75
+    },
+    {
+      "account_id": "A-3c1a3f",
+      "referral_source": "event",
+      "actual_net_ltv": 76531.44,
+      "predicted_net_ltv": 67078.51
+    },
+    {
+      "account_id": "A-b2af2e",
+      "referral_source": "event",
+      "actual_net_ltv": 3151.64,
+      "predicted_net_ltv": 39753.02
+    },
+    {
+      "account_id": "A-9bfc9f",
+      "referral_source": "ads",
+      "actual_net_ltv": 77964.81,
+      "predicted_net_ltv": 234044.98
+    },
+    {
+      "account_id": "A-4ae22a",
+      "referral_source": "other",
+      "actual_net_ltv": 28178.64,
+      "predicted_net_ltv": 49308.82
+    },
+    {
+      "account_id": "A-fda07f",
+      "referral_source": "partner",
+      "actual_net_ltv": 51814.86,
+      "predicted_net_ltv": 85836.42
+    },
+    {
+      "account_id": "A-977ca0",
+      "referral_source": "partner",
+      "actual_net_ltv": 361505.21,
+      "predicted_net_ltv": 72607.03
+    },
+    {
+      "account_id": "A-ab438f",
+      "referral_source": "ads",
+      "actual_net_ltv": 16474.76,
+      "predicted_net_ltv": 37243.18
+    },
+    {
+      "account_id": "A-e89151",
+      "referral_source": "organic",
+      "actual_net_ltv": 78749.25,
+      "predicted_net_ltv": 96542.74
+    },
+    {
+      "account_id": "A-40906c",
+      "referral_source": "ads",
+      "actual_net_ltv": 173990.61,
+      "predicted_net_ltv": 279257.45
+    },
+    {
+      "account_id": "A-81edc3",
+      "referral_source": "ads",
+      "actual_net_ltv": 71187.95,
+      "predicted_net_ltv": 89610.49
+    },
+    {
+      "account_id": "A-328bd0",
+      "referral_source": "partner",
+      "actual_net_ltv": 101739.36,
+      "predicted_net_ltv": 75681.54
+    },
+    {
+      "account_id": "A-b3fe05",
+      "referral_source": "partner",
+      "actual_net_ltv": 59206.99,
+      "predicted_net_ltv": 72537.37
+    },
+    {
+      "account_id": "A-09540c",
+      "referral_source": "event",
+      "actual_net_ltv": 94661.2,
+      "predicted_net_ltv": 152140.66
+    },
+    {
+      "account_id": "A-e693b6",
+      "referral_source": "event",
+      "actual_net_ltv": 165693.99,
+      "predicted_net_ltv": 119697.79
+    },
+    {
+      "account_id": "A-2446e3",
+      "referral_source": "organic",
+      "actual_net_ltv": 79213.65,
+      "predicted_net_ltv": 110918.27
+    },
+    {
+      "account_id": "A-241e75",
+      "referral_source": "partner",
+      "actual_net_ltv": 9334.14,
+      "predicted_net_ltv": 47396.06
+    },
+    {
+      "account_id": "A-922109",
+      "referral_source": "ads",
+      "actual_net_ltv": 61367.24,
+      "predicted_net_ltv": 78930.79
+    },
+    {
+      "account_id": "A-ff3c73",
+      "referral_source": "other",
+      "actual_net_ltv": 44308.66,
+      "predicted_net_ltv": 99631.12
+    },
+    {
+      "account_id": "A-8b0451",
+      "referral_source": "event",
+      "actual_net_ltv": 19412.83,
+      "predicted_net_ltv": 180908.63
+    },
+    {
+      "account_id": "A-331424",
+      "referral_source": "organic",
+      "actual_net_ltv": 39119.2,
+      "predicted_net_ltv": 73849.26
+    },
+    {
+      "account_id": "A-51ec1b",
+      "referral_source": "ads",
+      "actual_net_ltv": 26918.33,
+      "predicted_net_ltv": 37468.37
+    },
+    {
+      "account_id": "A-bcf664",
+      "referral_source": "other",
+      "actual_net_ltv": 67093.53,
+      "predicted_net_ltv": 95235.39
+    },
+    {
+      "account_id": "A-90a8c8",
+      "referral_source": "organic",
+      "actual_net_ltv": 57236.53,
+      "predicted_net_ltv": 91751.54
+    },
+    {
+      "account_id": "A-86cdb4",
+      "referral_source": "partner",
+      "actual_net_ltv": -1308.93,
+      "predicted_net_ltv": 64904.47
+    },
+    {
+      "account_id": "A-dbc825",
+      "referral_source": "partner",
+      "actual_net_ltv": 172503.37,
+      "predicted_net_ltv": 91607.17
+    },
+    {
+      "account_id": "A-7c4956",
+      "referral_source": "ads",
+      "actual_net_ltv": 21791.11,
+      "predicted_net_ltv": 78447.87
+    },
+    {
+      "account_id": "A-3ce5b8",
+      "referral_source": "ads",
+      "actual_net_ltv": 122848.3,
+      "predicted_net_ltv": 106576.07
+    },
+    {
+      "account_id": "A-bd4708",
+      "referral_source": "ads",
+      "actual_net_ltv": 75776.35,
+      "predicted_net_ltv": 194426.43
+    },
+    {
+      "account_id": "A-993085",
+      "referral_source": "ads",
+      "actual_net_ltv": 406401.09,
+      "predicted_net_ltv": 136061.87
+    },
+    {
+      "account_id": "A-92a3af",
+      "referral_source": "organic",
+      "actual_net_ltv": 75451.87,
+      "predicted_net_ltv": 116457.89
+    },
+    {
+      "account_id": "A-151c9a",
+      "referral_source": "ads",
+      "actual_net_ltv": 109041.62,
+      "predicted_net_ltv": 60497.78
+    },
+    {
+      "account_id": "A-474ad4",
+      "referral_source": "organic",
+      "actual_net_ltv": 40230.37,
+      "predicted_net_ltv": 73345.99
+    },
+    {
+      "account_id": "A-4ef964",
+      "referral_source": "organic",
+      "actual_net_ltv": 55026.75,
+      "predicted_net_ltv": 107665.32
+    },
+    {
+      "account_id": "A-fd9422",
+      "referral_source": "organic",
+      "actual_net_ltv": 82984.33,
+      "predicted_net_ltv": 179852.19
+    },
+    {
+      "account_id": "A-0baac2",
+      "referral_source": "organic",
+      "actual_net_ltv": 20233.63,
+      "predicted_net_ltv": 78264.16
+    },
+    {
+      "account_id": "A-560d27",
+      "referral_source": "organic",
+      "actual_net_ltv": 157343.67,
+      "predicted_net_ltv": 153898.83
+    },
+    {
+      "account_id": "A-2789e3",
+      "referral_source": "partner",
+      "actual_net_ltv": 25862.06,
+      "predicted_net_ltv": 78271.86
+    },
+    {
+      "account_id": "A-902ef7",
+      "referral_source": "other",
+      "actual_net_ltv": 61706.94,
+      "predicted_net_ltv": 249962.45
+    },
+    {
+      "account_id": "A-20736a",
+      "referral_source": "organic",
+      "actual_net_ltv": 90628.68,
+      "predicted_net_ltv": 136077.96
+    },
+    {
+      "account_id": "A-cea1f0",
+      "referral_source": "event",
+      "actual_net_ltv": 11349.13,
+      "predicted_net_ltv": 88168.23
+    },
+    {
+      "account_id": "A-ef84cf",
+      "referral_source": "partner",
+      "actual_net_ltv": 35163.47,
+      "predicted_net_ltv": 61837.04
+    },
+    {
+      "account_id": "A-d49cc5",
+      "referral_source": "event",
+      "actual_net_ltv": 55239.07,
+      "predicted_net_ltv": 216546.23
+    },
+    {
+      "account_id": "A-67be94",
+      "referral_source": "organic",
+      "actual_net_ltv": 102404.14,
+      "predicted_net_ltv": 49435.48
+    },
+    {
+      "account_id": "A-4e960a",
+      "referral_source": "other",
+      "actual_net_ltv": 142748.43,
+      "predicted_net_ltv": 73539.74
+    },
+    {
+      "account_id": "A-c37cab",
+      "referral_source": "event",
+      "actual_net_ltv": 60765.88,
+      "predicted_net_ltv": 97692.23
+    },
+    {
+      "account_id": "A-443b7c",
+      "referral_source": "other",
+      "actual_net_ltv": 46115.28,
+      "predicted_net_ltv": 73894.75
+    },
+    {
+      "account_id": "A-1f7acb",
+      "referral_source": "ads",
+      "actual_net_ltv": 291572.97,
+      "predicted_net_ltv": 235753.97
+    },
+    {
+      "account_id": "A-f51f16",
+      "referral_source": "partner",
+      "actual_net_ltv": 84862.08,
+      "predicted_net_ltv": 67432.98
+    },
+    {
+      "account_id": "A-5a3eb9",
+      "referral_source": "other",
+      "actual_net_ltv": 113827.12,
+      "predicted_net_ltv": 107779.27
+    },
+    {
+      "account_id": "A-417d2f",
+      "referral_source": "partner",
+      "actual_net_ltv": 173626.53,
+      "predicted_net_ltv": 78440.81
+    },
+    {
+      "account_id": "A-e98302",
+      "referral_source": "ads",
+      "actual_net_ltv": 59895.86,
+      "predicted_net_ltv": 54294.03
+    },
+    {
+      "account_id": "A-bcf87c",
+      "referral_source": "event",
+      "actual_net_ltv": 21968.45,
+      "predicted_net_ltv": 91090.42
+    },
+    {
+      "account_id": "A-54ecc2",
+      "referral_source": "partner",
+      "actual_net_ltv": 75199.31,
+      "predicted_net_ltv": 72366.23
+    },
+    {
+      "account_id": "A-625d0b",
+      "referral_source": "ads",
+      "actual_net_ltv": 5330.13,
+      "predicted_net_ltv": 66734.63
+    },
+    {
+      "account_id": "A-fce879",
+      "referral_source": "partner",
+      "actual_net_ltv": 9805.21,
+      "predicted_net_ltv": 79668.15
+    },
+    {
+      "account_id": "A-6da850",
+      "referral_source": "organic",
+      "actual_net_ltv": 84489.0,
+      "predicted_net_ltv": 88303.17
+    },
+    {
+      "account_id": "A-342303",
+      "referral_source": "other",
+      "actual_net_ltv": 5040.15,
+      "predicted_net_ltv": 38878.76
+    },
+    {
+      "account_id": "A-e7a1e2",
+      "referral_source": "event",
+      "actual_net_ltv": 30508.83,
+      "predicted_net_ltv": 98153.02
+    },
+    {
+      "account_id": "A-f1f639",
+      "referral_source": "ads",
+      "actual_net_ltv": 14272.86,
+      "predicted_net_ltv": 27752.35
+    },
+    {
+      "account_id": "A-a865bd",
+      "referral_source": "organic",
+      "actual_net_ltv": 124298.29,
+      "predicted_net_ltv": 88809.12
+    },
+    {
+      "account_id": "A-4e631b",
+      "referral_source": "other",
+      "actual_net_ltv": 104168.31,
+      "predicted_net_ltv": 145619.64
+    },
+    {
+      "account_id": "A-7f6b86",
+      "referral_source": "partner",
+      "actual_net_ltv": 72681.58,
+      "predicted_net_ltv": 167603.18
+    },
+    {
+      "account_id": "A-8adedc",
+      "referral_source": "event",
+      "actual_net_ltv": 86351.16,
+      "predicted_net_ltv": 146424.79
+    },
+    {
+      "account_id": "A-2edab2",
+      "referral_source": "event",
+      "actual_net_ltv": 43346.36,
+      "predicted_net_ltv": 47303.26
+    },
+    {
+      "account_id": "A-a6d261",
+      "referral_source": "other",
+      "actual_net_ltv": 206784.46,
+      "predicted_net_ltv": 93767.84
+    },
+    {
+      "account_id": "A-202b67",
+      "referral_source": "organic",
+      "actual_net_ltv": 69058.32,
+      "predicted_net_ltv": 76410.84
+    },
+    {
+      "account_id": "A-00bed1",
+      "referral_source": "ads",
+      "actual_net_ltv": 167337.44,
+      "predicted_net_ltv": 93140.75
+    },
+    {
+      "account_id": "A-ffc04f",
+      "referral_source": "ads",
+      "actual_net_ltv": 46983.7,
+      "predicted_net_ltv": 92300.74
+    },
+    {
+      "account_id": "A-65c341",
+      "referral_source": "ads",
+      "actual_net_ltv": 159388.15,
+      "predicted_net_ltv": 64515.61
+    },
+    {
+      "account_id": "A-dcc2f0",
+      "referral_source": "organic",
+      "actual_net_ltv": 116635.54,
+      "predicted_net_ltv": 67586.57
+    },
+    {
+      "account_id": "A-3d957b",
+      "referral_source": "other",
+      "actual_net_ltv": 29669.41,
+      "predicted_net_ltv": 49780.56
+    },
+    {
+      "account_id": "A-883b7d",
+      "referral_source": "other",
+      "actual_net_ltv": 121068.18,
+      "predicted_net_ltv": 101633.91
+    },
+    {
+      "account_id": "A-dcc3f1",
+      "referral_source": "event",
+      "actual_net_ltv": 42206.43,
+      "predicted_net_ltv": 48789.33
+    },
+    {
+      "account_id": "A-c62e55",
+      "referral_source": "partner",
+      "actual_net_ltv": 75123.97,
+      "predicted_net_ltv": 43686.76
+    },
+    {
+      "account_id": "A-e40f45",
+      "referral_source": "organic",
+      "actual_net_ltv": 50068.97,
+      "predicted_net_ltv": 101777.02
+    },
+    {
+      "account_id": "A-96215d",
+      "referral_source": "event",
+      "actual_net_ltv": 26494.01,
+      "predicted_net_ltv": 76735.51
+    },
+    {
+      "account_id": "A-2b9d3e",
+      "referral_source": "partner",
+      "actual_net_ltv": 20445.69,
+      "predicted_net_ltv": 35679.58
+    },
+    {
+      "account_id": "A-b7724f",
+      "referral_source": "organic",
+      "actual_net_ltv": 9110.19,
+      "predicted_net_ltv": 49666.59
+    },
+    {
+      "account_id": "A-eb1312",
+      "referral_source": "partner",
+      "actual_net_ltv": 16454.07,
+      "predicted_net_ltv": 122294.7
+    },
+    {
+      "account_id": "A-df1e44",
+      "referral_source": "organic",
+      "actual_net_ltv": 41522.87,
+      "predicted_net_ltv": 35204.14
+    },
+    {
+      "account_id": "A-a8d89d",
+      "referral_source": "ads",
+      "actual_net_ltv": 190887.84,
+      "predicted_net_ltv": 108425.9
+    },
+    {
+      "account_id": "A-600734",
+      "referral_source": "organic",
+      "actual_net_ltv": 90490.09,
+      "predicted_net_ltv": 115532.32
+    },
+    {
+      "account_id": "A-86fc1d",
+      "referral_source": "partner",
+      "actual_net_ltv": 34979.12,
+      "predicted_net_ltv": 73017.09
+    },
+    {
+      "account_id": "A-acb7f7",
+      "referral_source": "ads",
+      "actual_net_ltv": 212958.41,
+      "predicted_net_ltv": 192479.86
+    },
+    {
+      "account_id": "A-712f1c",
+      "referral_source": "ads",
+      "actual_net_ltv": 247034.95,
+      "predicted_net_ltv": 74506.0
+    },
+    {
+      "account_id": "A-3793ee",
+      "referral_source": "organic",
+      "actual_net_ltv": 110348.06,
+      "predicted_net_ltv": 106594.72
+    },
+    {
+      "account_id": "A-9a532a",
+      "referral_source": "partner",
+      "actual_net_ltv": 26825.23,
+      "predicted_net_ltv": 97835.89
+    },
+    {
+      "account_id": "A-2ebb4b",
+      "referral_source": "ads",
+      "actual_net_ltv": 245540.62,
+      "predicted_net_ltv": 112971.53
+    },
+    {
+      "account_id": "A-c9bb3e",
+      "referral_source": "ads",
+      "actual_net_ltv": 52062.34,
+      "predicted_net_ltv": 83007.04
+    },
+    {
+      "account_id": "A-4814a3",
+      "referral_source": "event",
+      "actual_net_ltv": 101351.46,
+      "predicted_net_ltv": 269071.03
+    },
+    {
+      "account_id": "A-b7b7b7",
+      "referral_source": "event",
+      "actual_net_ltv": 70406.56,
+      "predicted_net_ltv": 127995.85
+    },
+    {
+      "account_id": "A-ccc747",
+      "referral_source": "event",
+      "actual_net_ltv": 12491.4,
+      "predicted_net_ltv": 46227.94
+    },
+    {
+      "account_id": "A-bb3bd4",
+      "referral_source": "ads",
+      "actual_net_ltv": 31110.29,
+      "predicted_net_ltv": 129750.08
+    },
+    {
+      "account_id": "A-09316c",
+      "referral_source": "organic",
+      "actual_net_ltv": 94372.39,
+      "predicted_net_ltv": 245723.0
+    },
+    {
+      "account_id": "A-96bbc6",
+      "referral_source": "organic",
+      "actual_net_ltv": 80020.22,
+      "predicted_net_ltv": 93733.9
+    },
+    {
+      "account_id": "A-bc4d48",
+      "referral_source": "ads",
+      "actual_net_ltv": 16782.55,
+      "predicted_net_ltv": 109194.84
+    },
+    {
+      "account_id": "A-b30291",
+      "referral_source": "event",
+      "actual_net_ltv": 24686.01,
+      "predicted_net_ltv": 72393.91
+    },
+    {
+      "account_id": "A-cdf020",
+      "referral_source": "organic",
+      "actual_net_ltv": 77784.15,
+      "predicted_net_ltv": 70383.52
+    },
+    {
+      "account_id": "A-e6afc1",
+      "referral_source": "ads",
+      "actual_net_ltv": 240314.34,
+      "predicted_net_ltv": 134051.05
+    },
+    {
+      "account_id": "A-e3bd71",
+      "referral_source": "partner",
+      "actual_net_ltv": 279920.54,
+      "predicted_net_ltv": 207876.25
+    },
+    {
+      "account_id": "A-098560",
+      "referral_source": "ads",
+      "actual_net_ltv": 52700.59,
+      "predicted_net_ltv": 66812.06
+    },
+    {
+      "account_id": "A-82861f",
+      "referral_source": "organic",
+      "actual_net_ltv": 138236.49,
+      "predicted_net_ltv": 148267.1
+    },
+    {
+      "account_id": "A-94c3cd",
+      "referral_source": "other",
+      "actual_net_ltv": 6048.65,
+      "predicted_net_ltv": 117520.51
+    },
+    {
+      "account_id": "A-a33200",
+      "referral_source": "partner",
+      "actual_net_ltv": 36180.39,
+      "predicted_net_ltv": 128995.6
+    },
+    {
+      "account_id": "A-034368",
+      "referral_source": "event",
+      "actual_net_ltv": 9049.9,
+      "predicted_net_ltv": 47364.23
+    },
+    {
+      "account_id": "A-b54c01",
+      "referral_source": "event",
+      "actual_net_ltv": -2615.79,
+      "predicted_net_ltv": 65646.94
+    },
+    {
+      "account_id": "A-d82ef9",
+      "referral_source": "other",
+      "actual_net_ltv": 37134.66,
+      "predicted_net_ltv": 93113.94
+    },
+    {
+      "account_id": "A-bb2f49",
+      "referral_source": "other",
+      "actual_net_ltv": 219045.59,
+      "predicted_net_ltv": 92156.59
+    },
+    {
+      "account_id": "A-1f559b",
+      "referral_source": "organic",
+      "actual_net_ltv": 66680.16,
+      "predicted_net_ltv": 74136.91
+    },
+    {
+      "account_id": "A-5a215a",
+      "referral_source": "other",
+      "actual_net_ltv": 518269.39,
+      "predicted_net_ltv": 190933.53
+    },
+    {
+      "account_id": "A-3f9cc0",
+      "referral_source": "event",
+      "actual_net_ltv": 81052.35,
+      "predicted_net_ltv": 98039.94
+    },
+    {
+      "account_id": "A-ed510f",
+      "referral_source": "partner",
+      "actual_net_ltv": 249438.46,
+      "predicted_net_ltv": 123410.57
+    },
+    {
+      "account_id": "A-a7bd4b",
+      "referral_source": "ads",
+      "actual_net_ltv": 35022.91,
+      "predicted_net_ltv": 66195.93
+    },
+    {
+      "account_id": "A-d4ac0e",
+      "referral_source": "ads",
+      "actual_net_ltv": 68909.79,
+      "predicted_net_ltv": 77442.89
+    },
+    {
+      "account_id": "A-ffdfd5",
+      "referral_source": "organic",
+      "actual_net_ltv": 30908.07,
+      "predicted_net_ltv": 66278.16
+    },
+    {
+      "account_id": "A-0dbdc6",
+      "referral_source": "other",
+      "actual_net_ltv": 102493.36,
+      "predicted_net_ltv": 152700.9
+    },
+    {
+      "account_id": "A-7cfe77",
+      "referral_source": "ads",
+      "actual_net_ltv": 26135.48,
+      "predicted_net_ltv": 146019.61
+    },
+    {
+      "account_id": "A-1f0636",
+      "referral_source": "partner",
+      "actual_net_ltv": 423413.7,
+      "predicted_net_ltv": 178825.16
+    },
+    {
+      "account_id": "A-40de06",
+      "referral_source": "event",
+      "actual_net_ltv": 241065.11,
+      "predicted_net_ltv": 121519.31
+    },
+    {
+      "account_id": "A-cb5333",
+      "referral_source": "ads",
+      "actual_net_ltv": 94108.57,
+      "predicted_net_ltv": 214358.55
+    },
+    {
+      "account_id": "A-6e7827",
+      "referral_source": "other",
+      "actual_net_ltv": 27441.75,
+      "predicted_net_ltv": 75961.51
+    },
+    {
+      "account_id": "A-50bb9f",
+      "referral_source": "organic",
+      "actual_net_ltv": 32885.77,
+      "predicted_net_ltv": 75317.53
+    },
+    {
+      "account_id": "A-5247b3",
+      "referral_source": "partner",
+      "actual_net_ltv": 46425.63,
+      "predicted_net_ltv": 49152.66
+    },
+    {
+      "account_id": "A-f44180",
+      "referral_source": "event",
+      "actual_net_ltv": 230513.82,
+      "predicted_net_ltv": 78762.29
+    },
+    {
+      "account_id": "A-d42431",
+      "referral_source": "ads",
+      "actual_net_ltv": 51056.74,
+      "predicted_net_ltv": 45895.49
+    },
+    {
+      "account_id": "A-0a62f5",
+      "referral_source": "partner",
+      "actual_net_ltv": 7986.0,
+      "predicted_net_ltv": 62254.75
+    },
+    {
+      "account_id": "A-f5641b",
+      "referral_source": "other",
+      "actual_net_ltv": 93078.44,
+      "predicted_net_ltv": 98840.86
+    },
+    {
+      "account_id": "A-b44e3e",
+      "referral_source": "ads",
+      "actual_net_ltv": 231198.52,
+      "predicted_net_ltv": 185656.98
+    },
+    {
+      "account_id": "A-3b37d9",
+      "referral_source": "event",
+      "actual_net_ltv": 185334.44,
+      "predicted_net_ltv": 95442.48
+    },
+    {
+      "account_id": "A-54d94a",
+      "referral_source": "event",
+      "actual_net_ltv": 62227.19,
+      "predicted_net_ltv": 79352.71
+    },
+    {
+      "account_id": "A-7f29a7",
+      "referral_source": "event",
+      "actual_net_ltv": 14762.67,
+      "predicted_net_ltv": 145209.84
+    },
+    {
+      "account_id": "A-089363",
+      "referral_source": "event",
+      "actual_net_ltv": 55108.16,
+      "predicted_net_ltv": 63993.28
+    },
+    {
+      "account_id": "A-855a48",
+      "referral_source": "partner",
+      "actual_net_ltv": 176175.74,
+      "predicted_net_ltv": 62057.8
+    },
+    {
+      "account_id": "A-756192",
+      "referral_source": "other",
+      "actual_net_ltv": 92390.7,
+      "predicted_net_ltv": 81999.03
+    },
+    {
+      "account_id": "A-49b828",
+      "referral_source": "ads",
+      "actual_net_ltv": 279317.85,
+      "predicted_net_ltv": 71828.78
+    },
+    {
+      "account_id": "A-c7ffc2",
+      "referral_source": "partner",
+      "actual_net_ltv": 305185.78,
+      "predicted_net_ltv": 134095.55
+    },
+    {
+      "account_id": "A-751c58",
+      "referral_source": "organic",
+      "actual_net_ltv": 35034.18,
+      "predicted_net_ltv": 108682.41
+    },
+    {
+      "account_id": "A-72799b",
+      "referral_source": "event",
+      "actual_net_ltv": 99262.22,
+      "predicted_net_ltv": 54487.03
+    },
+    {
+      "account_id": "A-812c5b",
+      "referral_source": "organic",
+      "actual_net_ltv": 64428.11,
+      "predicted_net_ltv": 184803.03
+    },
+    {
+      "account_id": "A-69b156",
+      "referral_source": "other",
+      "actual_net_ltv": 79931.29,
+      "predicted_net_ltv": 78616.67
+    },
+    {
+      "account_id": "A-075038",
+      "referral_source": "ads",
+      "actual_net_ltv": 145659.46,
+      "predicted_net_ltv": 54352.83
+    },
+    {
+      "account_id": "A-940b8b",
+      "referral_source": "organic",
+      "actual_net_ltv": 57757.33,
+      "predicted_net_ltv": 110489.84
+    },
+    {
+      "account_id": "A-2d1036",
+      "referral_source": "ads",
+      "actual_net_ltv": 187392.79,
+      "predicted_net_ltv": 269205.48
+    },
+    {
+      "account_id": "A-9affe6",
+      "referral_source": "other",
+      "actual_net_ltv": 85881.88,
+      "predicted_net_ltv": 83923.72
+    },
+    {
+      "account_id": "A-80eeb6",
+      "referral_source": "organic",
+      "actual_net_ltv": 513667.63,
+      "predicted_net_ltv": 103164.23
+    },
+    {
+      "account_id": "A-c7e58b",
+      "referral_source": "other",
+      "actual_net_ltv": 31336.95,
+      "predicted_net_ltv": 29455.08
+    },
+    {
+      "account_id": "A-016043",
+      "referral_source": "organic",
+      "actual_net_ltv": 23350.93,
+      "predicted_net_ltv": 70221.05
+    },
+    {
+      "account_id": "A-bbe56f",
+      "referral_source": "ads",
+      "actual_net_ltv": 61377.74,
+      "predicted_net_ltv": 64523.84
+    },
+    {
+      "account_id": "A-7c5768",
+      "referral_source": "event",
+      "actual_net_ltv": 8355.89,
+      "predicted_net_ltv": 73669.83
+    },
+    {
+      "account_id": "A-751bd4",
+      "referral_source": "partner",
+      "actual_net_ltv": -4358.67,
+      "predicted_net_ltv": 38334.54
+    },
+    {
+      "account_id": "A-4e0e85",
+      "referral_source": "organic",
+      "actual_net_ltv": 25141.24,
+      "predicted_net_ltv": 61611.82
+    },
+    {
+      "account_id": "A-ad3abd",
+      "referral_source": "event",
+      "actual_net_ltv": 199826.42,
+      "predicted_net_ltv": 124136.61
+    },
+    {
+      "account_id": "A-e19ff6",
+      "referral_source": "partner",
+      "actual_net_ltv": 18328.45,
+      "predicted_net_ltv": 71576.7
+    },
+    {
+      "account_id": "A-7920cc",
+      "referral_source": "ads",
+      "actual_net_ltv": 231128.52,
+      "predicted_net_ltv": 173309.36
+    },
+    {
+      "account_id": "A-5a92e7",
+      "referral_source": "ads",
+      "actual_net_ltv": 25253.35,
+      "predicted_net_ltv": 129208.31
+    },
+    {
+      "account_id": "A-fdfc91",
+      "referral_source": "ads",
+      "actual_net_ltv": 85047.46,
+      "predicted_net_ltv": 117639.48
+    },
+    {
+      "account_id": "A-1e50e0",
+      "referral_source": "other",
+      "actual_net_ltv": 115879.69,
+      "predicted_net_ltv": 89330.99
+    },
+    {
+      "account_id": "A-1e1b80",
+      "referral_source": "other",
+      "actual_net_ltv": 375104.37,
+      "predicted_net_ltv": 141527.77
+    },
+    {
+      "account_id": "A-659280",
+      "referral_source": "event",
+      "actual_net_ltv": 165879.69,
+      "predicted_net_ltv": 83495.45
+    },
+    {
+      "account_id": "A-f6b2fb",
+      "referral_source": "event",
+      "actual_net_ltv": 82676.39,
+      "predicted_net_ltv": 91794.5
+    },
+    {
+      "account_id": "A-cb6cc6",
+      "referral_source": "ads",
+      "actual_net_ltv": 13118.45,
+      "predicted_net_ltv": 47749.49
+    },
+    {
+      "account_id": "A-d62e02",
+      "referral_source": "partner",
+      "actual_net_ltv": 27902.31,
+      "predicted_net_ltv": 70449.9
+    },
+    {
+      "account_id": "A-d535f6",
+      "referral_source": "organic",
+      "actual_net_ltv": 9781.06,
+      "predicted_net_ltv": 46992.02
+    },
+    {
+      "account_id": "A-39868b",
+      "referral_source": "partner",
+      "actual_net_ltv": 13938.91,
+      "predicted_net_ltv": 89889.02
+    },
+    {
+      "account_id": "A-3cc791",
+      "referral_source": "other",
+      "actual_net_ltv": 29734.6,
+      "predicted_net_ltv": 79369.66
+    },
+    {
+      "account_id": "A-337bc1",
+      "referral_source": "organic",
+      "actual_net_ltv": 148662.37,
+      "predicted_net_ltv": 83996.54
+    },
+    {
+      "account_id": "A-58b9ff",
+      "referral_source": "partner",
+      "actual_net_ltv": 50449.67,
+      "predicted_net_ltv": 80542.87
+    },
+    {
+      "account_id": "A-1d5444",
+      "referral_source": "partner",
+      "actual_net_ltv": 157524.92,
+      "predicted_net_ltv": 95910.91
+    },
+    {
+      "account_id": "A-0f3e88",
+      "referral_source": "other",
+      "actual_net_ltv": 37964.58,
+      "predicted_net_ltv": 50472.83
+    },
+    {
+      "account_id": "A-7641d3",
+      "referral_source": "partner",
+      "actual_net_ltv": 69025.32,
+      "predicted_net_ltv": 77159.9
+    },
+    {
+      "account_id": "A-cd458b",
+      "referral_source": "other",
+      "actual_net_ltv": 79312.95,
+      "predicted_net_ltv": 98835.63
+    },
+    {
+      "account_id": "A-c16b88",
+      "referral_source": "event",
+      "actual_net_ltv": 55250.65,
+      "predicted_net_ltv": 76790.74
+    },
+    {
+      "account_id": "A-59f724",
+      "referral_source": "other",
+      "actual_net_ltv": 64572.88,
+      "predicted_net_ltv": 85549.52
+    },
+    {
+      "account_id": "A-87aa7b",
+      "referral_source": "organic",
+      "actual_net_ltv": 64570.39,
+      "predicted_net_ltv": 143870.06
+    },
+    {
+      "account_id": "A-1e6fc3",
+      "referral_source": "other",
+      "actual_net_ltv": -2367.24,
+      "predicted_net_ltv": 41864.58
+    },
+    {
+      "account_id": "A-34ea2f",
+      "referral_source": "organic",
+      "actual_net_ltv": 8317.47,
+      "predicted_net_ltv": 81413.77
+    },
+    {
+      "account_id": "A-716841",
+      "referral_source": "other",
+      "actual_net_ltv": 47652.75,
+      "predicted_net_ltv": 180570.03
+    },
+    {
+      "account_id": "A-558c72",
+      "referral_source": "organic",
+      "actual_net_ltv": 42293.11,
+      "predicted_net_ltv": 66812.91
+    },
+    {
+      "account_id": "A-b11cd0",
+      "referral_source": "ads",
+      "actual_net_ltv": 32546.44,
+      "predicted_net_ltv": 58306.63
+    },
+    {
+      "account_id": "A-7f4db3",
+      "referral_source": "other",
+      "actual_net_ltv": 125463.08,
+      "predicted_net_ltv": 96713.1
+    },
+    {
+      "account_id": "A-cc102e",
+      "referral_source": "partner",
+      "actual_net_ltv": 18816.06,
+      "predicted_net_ltv": 73884.71
+    },
+    {
+      "account_id": "A-dec005",
+      "referral_source": "partner",
+      "actual_net_ltv": 120357.0,
+      "predicted_net_ltv": 82811.15
+    },
+    {
+      "account_id": "A-7c83a1",
+      "referral_source": "partner",
+      "actual_net_ltv": 63080.83,
+      "predicted_net_ltv": 103827.74
+    },
+    {
+      "account_id": "A-297a2d",
+      "referral_source": "event",
+      "actual_net_ltv": 107069.57,
+      "predicted_net_ltv": 47105.31
+    },
+    {
+      "account_id": "A-4c56c9",
+      "referral_source": "partner",
+      "actual_net_ltv": 54688.38,
+      "predicted_net_ltv": 98088.16
+    },
+    {
+      "account_id": "A-cbbe12",
+      "referral_source": "partner",
+      "actual_net_ltv": 34775.41,
+      "predicted_net_ltv": 97834.31
+    },
+    {
+      "account_id": "A-4a267b",
+      "referral_source": "other",
+      "actual_net_ltv": 84266.26,
+      "predicted_net_ltv": 103388.45
+    },
+    {
+      "account_id": "A-bcbe98",
+      "referral_source": "other",
+      "actual_net_ltv": 33862.45,
+      "predicted_net_ltv": 180567.32
+    },
+    {
+      "account_id": "A-427b69",
+      "referral_source": "other",
+      "actual_net_ltv": 29036.46,
+      "predicted_net_ltv": 89941.83
+    },
+    {
+      "account_id": "A-054577",
+      "referral_source": "ads",
+      "actual_net_ltv": 96693.27,
+      "predicted_net_ltv": 72402.12
+    },
+    {
+      "account_id": "A-bc87bc",
+      "referral_source": "event",
+      "actual_net_ltv": 3406.53,
+      "predicted_net_ltv": 46322.43
+    },
+    {
+      "account_id": "A-e7beab",
+      "referral_source": "organic",
+      "actual_net_ltv": 60180.55,
+      "predicted_net_ltv": 106336.06
+    },
+    {
+      "account_id": "A-a09355",
+      "referral_source": "organic",
+      "actual_net_ltv": 49172.03,
+      "predicted_net_ltv": 64806.57
+    },
+    {
+      "account_id": "A-31ab9a",
+      "referral_source": "organic",
+      "actual_net_ltv": 28693.78,
+      "predicted_net_ltv": 31179.08
+    },
+    {
+      "account_id": "A-0158bb",
+      "referral_source": "partner",
+      "actual_net_ltv": 4273.74,
+      "predicted_net_ltv": 74507.51
+    },
+    {
+      "account_id": "A-f19b24",
+      "referral_source": "organic",
+      "actual_net_ltv": 10339.44,
+      "predicted_net_ltv": 73444.31
+    },
+    {
+      "account_id": "A-798a3f",
+      "referral_source": "other",
+      "actual_net_ltv": 64057.06,
+      "predicted_net_ltv": 81550.34
+    },
+    {
+      "account_id": "A-42b791",
+      "referral_source": "event",
+      "actual_net_ltv": 38460.89,
+      "predicted_net_ltv": 73324.89
+    },
+    {
+      "account_id": "A-068fc6",
+      "referral_source": "event",
+      "actual_net_ltv": 114614.98,
+      "predicted_net_ltv": 175863.66
+    },
+    {
+      "account_id": "A-6f50ae",
+      "referral_source": "partner",
+      "actual_net_ltv": 114612.54,
+      "predicted_net_ltv": 90684.4
+    },
+    {
+      "account_id": "A-a2485e",
+      "referral_source": "event",
+      "actual_net_ltv": 18992.87,
+      "predicted_net_ltv": 49000.31
+    },
+    {
+      "account_id": "A-bb1eaa",
+      "referral_source": "organic",
+      "actual_net_ltv": 30584.06,
+      "predicted_net_ltv": 57013.05
+    },
+    {
+      "account_id": "A-cc98bc",
+      "referral_source": "ads",
+      "actual_net_ltv": 257815.74,
+      "predicted_net_ltv": 178778.22
+    },
+    {
+      "account_id": "A-d77f4c",
+      "referral_source": "partner",
+      "actual_net_ltv": 250174.89,
+      "predicted_net_ltv": 68014.75
+    },
+    {
+      "account_id": "A-ccabf0",
+      "referral_source": "organic",
+      "actual_net_ltv": 211734.3,
+      "predicted_net_ltv": 92354.87
+    },
+    {
+      "account_id": "A-4a4c2d",
+      "referral_source": "event",
+      "actual_net_ltv": 304802.93,
+      "predicted_net_ltv": 180985.37
+    },
+    {
+      "account_id": "A-b7ef83",
+      "referral_source": "partner",
+      "actual_net_ltv": 83370.18,
+      "predicted_net_ltv": 86567.6
+    },
+    {
+      "account_id": "A-e08cd3",
+      "referral_source": "ads",
+      "actual_net_ltv": 107318.85,
+      "predicted_net_ltv": 183413.24
+    },
+    {
+      "account_id": "A-19b2c8",
+      "referral_source": "other",
+      "actual_net_ltv": 199834.82,
+      "predicted_net_ltv": 101642.51
+    },
+    {
+      "account_id": "A-970c97",
+      "referral_source": "other",
+      "actual_net_ltv": 70476.3,
+      "predicted_net_ltv": 52976.1
+    },
+    {
+      "account_id": "A-6dee43",
+      "referral_source": "other",
+      "actual_net_ltv": 144438.31,
+      "predicted_net_ltv": 99213.79
+    },
+    {
+      "account_id": "A-5ed98d",
+      "referral_source": "partner",
+      "actual_net_ltv": 47910.86,
+      "predicted_net_ltv": 71058.59
+    },
+    {
+      "account_id": "A-c58f49",
+      "referral_source": "other",
+      "actual_net_ltv": 130826.41,
+      "predicted_net_ltv": 226869.27
+    },
+    {
+      "account_id": "A-9c18c4",
+      "referral_source": "ads",
+      "actual_net_ltv": 115728.25,
+      "predicted_net_ltv": 33083.94
+    },
+    {
+      "account_id": "A-cc8c8f",
+      "referral_source": "ads",
+      "actual_net_ltv": 35034.81,
+      "predicted_net_ltv": 113371.99
+    },
+    {
+      "account_id": "A-5f7781",
+      "referral_source": "other",
+      "actual_net_ltv": 21486.69,
+      "predicted_net_ltv": 63016.52
+    },
+    {
+      "account_id": "A-e1b9cd",
+      "referral_source": "event",
+      "actual_net_ltv": 312983.17,
+      "predicted_net_ltv": 188995.68
+    },
+    {
+      "account_id": "A-ac85cd",
+      "referral_source": "partner",
+      "actual_net_ltv": 37562.71,
+      "predicted_net_ltv": 235497.81
+    },
+    {
+      "account_id": "A-d792a6",
+      "referral_source": "organic",
+      "actual_net_ltv": 150989.16,
+      "predicted_net_ltv": 51058.26
+    },
+    {
+      "account_id": "A-ac9111",
+      "referral_source": "event",
+      "actual_net_ltv": 93720.73,
+      "predicted_net_ltv": 126092.17
+    },
+    {
+      "account_id": "A-9f0b68",
+      "referral_source": "ads",
+      "actual_net_ltv": 86213.48,
+      "predicted_net_ltv": 85421.6
+    },
+    {
+      "account_id": "A-ccb686",
+      "referral_source": "other",
+      "actual_net_ltv": 79393.37,
+      "predicted_net_ltv": 116205.49
+    },
+    {
+      "account_id": "A-0e966d",
+      "referral_source": "ads",
+      "actual_net_ltv": 31484.93,
+      "predicted_net_ltv": 88853.19
+    },
+    {
+      "account_id": "A-b9f5b1",
+      "referral_source": "other",
+      "actual_net_ltv": 15733.82,
+      "predicted_net_ltv": 36066.71
+    },
+    {
+      "account_id": "A-8ae3fc",
+      "referral_source": "ads",
+      "actual_net_ltv": 7315.75,
+      "predicted_net_ltv": 59389.98
+    },
+    {
+      "account_id": "A-55f257",
+      "referral_source": "organic",
+      "actual_net_ltv": 68670.61,
+      "predicted_net_ltv": 65416.82
+    },
+    {
+      "account_id": "A-712533",
+      "referral_source": "organic",
+      "actual_net_ltv": 77184.62,
+      "predicted_net_ltv": 81533.42
+    },
+    {
+      "account_id": "A-781cc0",
+      "referral_source": "organic",
+      "actual_net_ltv": 30367.76,
+      "predicted_net_ltv": 119657.51
+    }
+  ],
+  "scored_young_accounts": [
+    {
+      "account_id": "A-66224b",
+      "referral_source": "other",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-18",
+      "predicted_net_ltv": 207237.2
+    },
+    {
+      "account_id": "A-ce550d",
+      "referral_source": "event",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-10-27",
+      "predicted_net_ltv": 195272.7
+    },
+    {
+      "account_id": "A-18793f",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-12-18",
+      "predicted_net_ltv": 177390.5
+    },
+    {
+      "account_id": "A-d4e0d4",
+      "referral_source": "other",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-18",
+      "predicted_net_ltv": 173310.9
+    },
+    {
+      "account_id": "A-b48f73",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-13",
+      "predicted_net_ltv": 170066.82
+    },
+    {
+      "account_id": "A-0651a4",
+      "referral_source": "organic",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-16",
+      "predicted_net_ltv": 147751.73
+    },
+    {
+      "account_id": "A-e4144b",
+      "referral_source": "other",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-22",
+      "predicted_net_ltv": 137630.84
+    },
+    {
+      "account_id": "A-76fa4d",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-24",
+      "predicted_net_ltv": 134668.62
+    },
+    {
+      "account_id": "A-c70870",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-22",
+      "predicted_net_ltv": 133084.44
+    },
+    {
+      "account_id": "A-f9cc74",
+      "referral_source": "partner",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-10-12",
+      "predicted_net_ltv": 129492.27
+    },
+    {
+      "account_id": "A-0354fe",
+      "referral_source": "other",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-22",
+      "predicted_net_ltv": 128751.58
+    },
+    {
+      "account_id": "A-bd4513",
+      "referral_source": "event",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-06",
+      "predicted_net_ltv": 127984.21
+    },
+    {
+      "account_id": "A-d40bf7",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-08",
+      "predicted_net_ltv": 126641.1
+    },
+    {
+      "account_id": "A-b78bf8",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-15",
+      "predicted_net_ltv": 121664.4
+    },
+    {
+      "account_id": "A-c43359",
+      "referral_source": "organic",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-16",
+      "predicted_net_ltv": 120827.23
+    },
+    {
+      "account_id": "A-3a7284",
+      "referral_source": "organic",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-17",
+      "predicted_net_ltv": 106423.14
+    },
+    {
+      "account_id": "A-39ddf4",
+      "referral_source": "partner",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-12-05",
+      "predicted_net_ltv": 105950.96
+    },
+    {
+      "account_id": "A-039727",
+      "referral_source": "organic",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-02",
+      "predicted_net_ltv": 105195.14
+    },
+    {
+      "account_id": "A-bb1486",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-05",
+      "predicted_net_ltv": 104845.99
+    },
+    {
+      "account_id": "A-671f31",
+      "referral_source": "ads",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-24",
+      "predicted_net_ltv": 104472.08
+    },
+    {
+      "account_id": "A-d3c88e",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-18",
+      "predicted_net_ltv": 102273.83
+    },
+    {
+      "account_id": "A-e4bf56",
+      "referral_source": "ads",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-28",
+      "predicted_net_ltv": 101416.0
+    },
+    {
+      "account_id": "A-b179bf",
+      "referral_source": "ads",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-27",
+      "predicted_net_ltv": 101269.57
+    },
+    {
+      "account_id": "A-b07346",
+      "referral_source": "partner",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-10",
+      "predicted_net_ltv": 98581.9
+    },
+    {
+      "account_id": "A-fabe19",
+      "referral_source": "ads",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-11",
+      "predicted_net_ltv": 96738.68
+    },
+    {
+      "account_id": "A-118f1c",
+      "referral_source": "other",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-31",
+      "predicted_net_ltv": 94557.69
+    },
+    {
+      "account_id": "A-5fe118",
+      "referral_source": "other",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-07",
+      "predicted_net_ltv": 94086.63
+    },
+    {
+      "account_id": "A-1ac5e0",
+      "referral_source": "event",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-20",
+      "predicted_net_ltv": 89829.39
+    },
+    {
+      "account_id": "A-443f6f",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-12-07",
+      "predicted_net_ltv": 88303.28
+    },
+    {
+      "account_id": "A-89ee83",
+      "referral_source": "organic",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-04",
+      "predicted_net_ltv": 87876.63
+    },
+    {
+      "account_id": "A-149a69",
+      "referral_source": "event",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-17",
+      "predicted_net_ltv": 87787.5
+    },
+    {
+      "account_id": "A-b07b56",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-08",
+      "predicted_net_ltv": 87537.96
+    },
+    {
+      "account_id": "A-2922b6",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-14",
+      "predicted_net_ltv": 82990.1
+    },
+    {
+      "account_id": "A-9174e0",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-12-04",
+      "predicted_net_ltv": 82355.07
+    },
+    {
+      "account_id": "A-1b7577",
+      "referral_source": "other",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-27",
+      "predicted_net_ltv": 82116.65
+    },
+    {
+      "account_id": "A-118d55",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-22",
+      "predicted_net_ltv": 80522.81
+    },
+    {
+      "account_id": "A-82d8a6",
+      "referral_source": "ads",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-28",
+      "predicted_net_ltv": 80180.19
+    },
+    {
+      "account_id": "A-524364",
+      "referral_source": "partner",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-12-31",
+      "predicted_net_ltv": 79084.24
+    },
+    {
+      "account_id": "A-139c3b",
+      "referral_source": "organic",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-21",
+      "predicted_net_ltv": 77246.68
+    },
+    {
+      "account_id": "A-88c6ca",
+      "referral_source": "ads",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-25",
+      "predicted_net_ltv": 77149.25
+    },
+    {
+      "account_id": "A-c16cf7",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-16",
+      "predicted_net_ltv": 76896.03
+    },
+    {
+      "account_id": "A-ced9aa",
+      "referral_source": "other",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-10-05",
+      "predicted_net_ltv": 76251.17
+    },
+    {
+      "account_id": "A-2e4581",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-16",
+      "predicted_net_ltv": 72214.93
+    },
+    {
+      "account_id": "A-6a7c9d",
+      "referral_source": "organic",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-10-24",
+      "predicted_net_ltv": 71577.03
+    },
+    {
+      "account_id": "A-0f7d77",
+      "referral_source": "partner",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-28",
+      "predicted_net_ltv": 71295.52
+    },
+    {
+      "account_id": "A-db5e9e",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-09",
+      "predicted_net_ltv": 69626.25
+    },
+    {
+      "account_id": "A-4bfa33",
+      "referral_source": "event",
+      "plan_tier": "Basic",
+      "signup_date": "2024-12-07",
+      "predicted_net_ltv": 69511.7
+    },
+    {
+      "account_id": "A-410e86",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-10",
+      "predicted_net_ltv": 64723.46
+    },
+    {
+      "account_id": "A-9f2731",
+      "referral_source": "event",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-10-04",
+      "predicted_net_ltv": 64065.36
+    },
+    {
+      "account_id": "A-fd7ad3",
+      "referral_source": "event",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-01",
+      "predicted_net_ltv": 58492.71
+    },
+    {
+      "account_id": "A-533452",
+      "referral_source": "organic",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-12",
+      "predicted_net_ltv": 58200.37
+    },
+    {
+      "account_id": "A-854864",
+      "referral_source": "event",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-12-07",
+      "predicted_net_ltv": 57346.09
+    },
+    {
+      "account_id": "A-6843f2",
+      "referral_source": "ads",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-12-10",
+      "predicted_net_ltv": 56880.93
+    },
+    {
+      "account_id": "A-463db0",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-12-05",
+      "predicted_net_ltv": 55920.05
+    },
+    {
+      "account_id": "A-5c9849",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-03",
+      "predicted_net_ltv": 54264.49
+    },
+    {
+      "account_id": "A-78f02b",
+      "referral_source": "event",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-17",
+      "predicted_net_ltv": 53860.25
+    },
+    {
+      "account_id": "A-fb186e",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-27",
+      "predicted_net_ltv": 51751.13
+    },
+    {
+      "account_id": "A-0f6450",
+      "referral_source": "other",
+      "plan_tier": "Pro",
+      "signup_date": "2024-12-27",
+      "predicted_net_ltv": 50785.91
+    },
+    {
+      "account_id": "A-0be015",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-10-15",
+      "predicted_net_ltv": 49703.77
+    },
+    {
+      "account_id": "A-5f2961",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-22",
+      "predicted_net_ltv": 49116.06
+    },
+    {
+      "account_id": "A-17939a",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-12-26",
+      "predicted_net_ltv": 48023.1
+    },
+    {
+      "account_id": "A-7c6b6b",
+      "referral_source": "other",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-30",
+      "predicted_net_ltv": 47198.14
+    },
+    {
+      "account_id": "A-700ade",
+      "referral_source": "organic",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-10-31",
+      "predicted_net_ltv": 46612.56
+    },
+    {
+      "account_id": "A-de24d5",
+      "referral_source": "other",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-05",
+      "predicted_net_ltv": 46175.95
+    },
+    {
+      "account_id": "A-cbd1a3",
+      "referral_source": "other",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-25",
+      "predicted_net_ltv": 45674.15
+    },
+    {
+      "account_id": "A-310452",
+      "referral_source": "other",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-12-25",
+      "predicted_net_ltv": 45260.41
+    },
+    {
+      "account_id": "A-8bde0c",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-04",
+      "predicted_net_ltv": 43946.45
+    },
+    {
+      "account_id": "A-d26ab4",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-07",
+      "predicted_net_ltv": 42625.07
+    },
+    {
+      "account_id": "A-0b0d6d",
+      "referral_source": "organic",
+      "plan_tier": "Pro",
+      "signup_date": "2024-12-30",
+      "predicted_net_ltv": 42141.4
+    },
+    {
+      "account_id": "A-bf7919",
+      "referral_source": "organic",
+      "plan_tier": "Pro",
+      "signup_date": "2024-11-27",
+      "predicted_net_ltv": 41422.36
+    },
+    {
+      "account_id": "A-cc1d8d",
+      "referral_source": "other",
+      "plan_tier": "Pro",
+      "signup_date": "2024-12-08",
+      "predicted_net_ltv": 41172.66
+    },
+    {
+      "account_id": "A-c37601",
+      "referral_source": "partner",
+      "plan_tier": "Basic",
+      "signup_date": "2024-10-31",
+      "predicted_net_ltv": 39751.18
+    },
+    {
+      "account_id": "A-22f2df",
+      "referral_source": "ads",
+      "plan_tier": "Basic",
+      "signup_date": "2024-12-14",
+      "predicted_net_ltv": 38135.88
+    },
+    {
+      "account_id": "A-309e54",
+      "referral_source": "other",
+      "plan_tier": "Pro",
+      "signup_date": "2024-12-09",
+      "predicted_net_ltv": 37385.02
+    },
+    {
+      "account_id": "A-956988",
+      "referral_source": "ads",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-30",
+      "predicted_net_ltv": 35668.95
+    },
+    {
+      "account_id": "A-5790f4",
+      "referral_source": "event",
+      "plan_tier": "Pro",
+      "signup_date": "2024-12-22",
+      "predicted_net_ltv": 35660.64
+    },
+    {
+      "account_id": "A-6965e1",
+      "referral_source": "organic",
+      "plan_tier": "Basic",
+      "signup_date": "2024-11-25",
+      "predicted_net_ltv": 32521.78
+    },
+    {
+      "account_id": "A-712426",
+      "referral_source": "other",
+      "plan_tier": "Enterprise",
+      "signup_date": "2024-11-10",
+      "predicted_net_ltv": 31771.96
+    }
+  ]
+}
